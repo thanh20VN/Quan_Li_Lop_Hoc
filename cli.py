@@ -34,12 +34,13 @@ def teacher(id):
                 logic.reg.register(user, password, id+1, role)
                 # ...
             elif cmd == "add":
+                import logic
                 team_name = str(input("Team Name: "))
                 user_name = str(input("User name: "))
                 user_id = data.find_user_name(user_name).get("id")
                 team_id = data.team.find_team(team_name)
-                print(team_id, user_id)
-                logic.team.add_member(team_id, user_id)
+                # print(team_id, user_id)
+                logic.team.add_member(team_id,user_id)
                 # ...
             elif cmd == "remove":
                 team_name = str(input("Team Name: "))
@@ -108,9 +109,9 @@ def class_monitor(id):
                             print("Max week")
                             continue
                     t=logic.summary.week.generate_weekly_summary().values()
-                    print(t)
+                    # print(t)
                     for i in t:
-                        print(i)
+                        # print(i)
                         for j in i.values():
                             print(j)
                             print("Name:", j["name"])

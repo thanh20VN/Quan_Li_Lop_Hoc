@@ -3,6 +3,9 @@
         {
             "name": "team 1",
             "id_team": "2"
+        },{
+            "name": "Team 2",
+            "id_team": "5"
         }
     ]
 }

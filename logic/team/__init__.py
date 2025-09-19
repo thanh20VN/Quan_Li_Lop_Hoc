@@ -1,10 +1,13 @@
 import data
 import logic.team.add
+import logic.team.remove
 
 def create_team(name, teamleider_id):
     teams = {"name": name, "teamleider_id": teamleider_id, "members": [], "errors": [], "give": []}
     data.team.write_teamfile(teamleider_id, teams)
-    return True
+    m=data.team.read_mainfile(teamleider_id)
+    m["idteam"].append({"name":name,"id_team":teamleider_id})
+    return ValueError("Create team successfully")
 
 def add_member(teamleider_id, user_id):
     if data.team.check_team(teamleider_id):
@@ -14,11 +17,11 @@ def add_member(teamleider_id, user_id):
             teams["errors"].append([])
             teams["give"].append([])
             data.team.write_teamfile(teamleider_id, teams)
-            return True
+            return ValueError("Successfully add menber")
         else:
-            return False
+            return ValueError("Nember in team")
     else:
-        return False
+        return ValueError("Not find out team")
 
 def remove_member(teamleider_id, user_id):
     if data.team.check_team(teamleider_id):
@@ -26,11 +29,11 @@ def remove_member(teamleider_id, user_id):
         if user_id in teams["members"]:
             teams["members"].remove(user_id)
             data.team.write_teamfile(teamleider_id, teams)
-            return True
+            return ValueError("Successfully remove menber")
         else:
-            return False
+            return ValueError("Menber in team")
     else:
-        return False
+        return ValueError("Not found out team")
 
 def team(name, teamleider_id):
     if data.team.check_team(teamleider_id):

@@ -5,24 +5,37 @@ import cli
 
 logined = False
 id = 0
-data.load_users()
+try:
+    data.load_users()
+except (AttributeError, KeyError, TypeError, IndexError, IOError, OSError, ZeroDivisionError, ImportError, NameError, RuntimeError) as e:
+    print(f"Error: {e}")
+except (ValueError) as e:
+    print(e)
+except Exception as e:
+    print(f"Noting error: {e}")
 
 while not logined:
     if data.UserData == {}:
         print("No users found. Please register.")
         name = input("Name > ")
         password = getpass.getpass("Pass > ")
-        role = "admin"
+        role = "teacher"
         id = len(data.UserData) + 1
         logic.reg.register(name, password, id, role)
         print("Registration successful. Please log in.")
     user = input("User > ")
-    if logic.login.login(user, getpass.getpass("Pass > ")):
-        id = data.find_user_name(user).get("id")
-        logined = True
-        print("Login successful!")
-    else:
-        print("Login failed.")
+    try:
+        logic.login.login(user, getpass.getpass("Pass > "))
+    except (AttributeError, KeyError, TypeError, IndexError, IOError, OSError, ZeroDivisionError, ImportError, NameError, RuntimeError) as e:
+        print(f"Error: {e}")
+    except ValueError as e:
+        if str(e) == "Login successful.":
+            id = data.find_user_name(user).get("id")
+            logined = True
+        else:
+            print(e)
+    except Exception as e:
+        print(f"Noting error: {e}")
 
 choose=""
 while choose not in ["c", "u"]:
