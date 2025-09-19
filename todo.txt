@@ -16,3 +16,4 @@ Error / give {cm:2025-09-19}
 summary week {cm:2025-09-19}
 summary year
 summary semester
+fix stuendt
