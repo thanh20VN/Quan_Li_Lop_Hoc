@@ -58,7 +58,7 @@ def read_main(type):
     with open("./data/summary/{0}/main.json".format(type), "r", encoding="utf-8") as f:
         return json.load(f)
 
-def create(teamleider_id, type):
+def create(type):
     import os
     with open("./data/summary/{0}/main.json".format(type), "r", encoding="utf-8") as f:
         import json
@@ -68,24 +68,21 @@ def create(teamleider_id, type):
 
     with open("./data/summary/{0}/main.json".format(type), "w", encoding="utf-8") as f:
         json.dump(main, f)
-    
-    if type not in ["week", "semester", "year"]:
-        raise ValueError("Invalid type. Must be 'week', 'semester', or 'year'.")
-    elif type == "week":
-        file_dir = "./data/summary/week/Team_{0}/".format(teamleider_id)
-        file_path = "./data/summary/week/Team_{0}/{1}.json".format(teamleider_id, id)
-    elif type == "semester":
-        file_dir = "./data/summary/semester/Team_{0}/".format(teamleider_id)
-        file_path = "./data/summary/semester/Team_{0}/{1}.json".format(teamleider_id, id-1)
-    elif type == "year":
-        file_dir = "./data/summary/year/Team_{0}/".format(teamleider_id)
-        file_path = "./data/summary/year/Team_{0}/{1}.json".format(teamleider_id, id)
-
-    if not os.path.exists(file_dir):
-        os.makedirs(file_dir)
-    
-    if not os.path.exists(file_path):
+    import data
+    t=data.team.read_mainfile()
+    for i in t["idteam"]: 
+        teamleider_id= i["id_team"]
+        if type not in ["week", "semester", "year"]:
+            raise ValueError("Invalid type. Must be 'week', 'semester', or 'year'.")
+        elif type == "week":
+            file_dir = "./data/summary/week/Team_{0}/".format(teamleider_id)
+            file_path = "./data/summary/week/Team_{0}/{1}.json".format(teamleider_id, id)
+        elif type == "semester":
+            file_dir = "./data/summary/semester/Team_{0}/".format(teamleider_id)
+            file_path = "./data/summary/semester/Team_{0}/{1}.json".format(teamleider_id, id-1)
+        elif type == "year":
+            file_dir = "./data/summary/year/Team_{0}/".format(teamleider_id)
+            file_path = "./data/summary/year/Team_{0}/{1}.json".format(teamleider_id, id)
+        if not os.path.exists(file_dir):
+            os.makedirs(file_dir)
         with open(file_path, "w", encoding="utf-8") as f: f.write("{}")
-        raise ValueError("Summary created successfully.")
-    else:
-        raise ValueError("Summary already exists.")

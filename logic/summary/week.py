@@ -1,14 +1,9 @@
 import data
 import logic
 
-def create():
-    t=data.team.read_mainfile()
-    for i in t["idteam"]: 
-        data.summary.create(i["id_team"], "week")
-
 def generate_weekly_summary():
     t=data.team.read_mainfile()
-    create()
+    data.summary.create("week")
     t2={}
     for i in t["idteam"]: 
         if data.team.check_team(i["id_team"]):
