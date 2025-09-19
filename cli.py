@@ -50,11 +50,12 @@ def teacher(id):
                 logic.team.remove_member(team_id, user_id)
                 # ...
         except (AttributeError, KeyError, TypeError, IndexError, IOError, OSError, ZeroDivisionError, ImportError, NameError, RuntimeError) as e:
-            print(f"Error: {e}")
+            import traceback
+            traceback.print_exc()
         except (ValueError) as e:
             print(e)
         except Exception as e:
-            print(f"Not error: {e}")
+            print(f"{type(e).__name__}: {e}")
 
 def class_monitor(id):
     print(f"Welcome, {data.find_user(id).get('name')}, Role: {data.find_user(id).get('role')}")
@@ -133,11 +134,12 @@ def class_monitor(id):
                 else:
                     print("Invalid choice.")
         except (AttributeError, KeyError, TypeError, IndexError, IOError, OSError, ZeroDivisionError, ImportError, NameError, RuntimeError) as e:
-            print(f"Error: {e}")
+            import traceback
+            traceback.print_exc()
         except (ValueError) as e:
             print(e)
         except Exception as e:
-            print(f"Not error: {e}")
+            print(f"{type(e).__name__}: {e}")
 
 def teamleider(id):
     print(f"Welcome, {data.find_user(id).get('name')}, Role: {data.find_user(id).get('role')}")
@@ -178,11 +180,11 @@ def teamleider(id):
                         logic.team.add.add_give(id, student_id, give_id)
                         # ...
         except (AttributeError, KeyError, TypeError, IndexError, IOError, OSError, ZeroDivisionError, ImportError, NameError, RuntimeError) as e:
-            print(f"Error: {e}")
+            print(f"{type(e).__name__}: {e}")
         except (ValueError) as e:
             print(e)
         except Exception as e:
-            print(f"Not error: {e}")
+            print(f"{type(e).__name__}: {e}")
 
 def student(id):
     print(f"Welcome, {data.find_user(id).get('name')}, Role: {data.find_user(id).get('role')}")
@@ -210,8 +212,8 @@ def student(id):
                 print(logic.student.my_error_give.cal_give(id))
                 print("Total:", logic.student.my_error_give.cal_total(id))
         except (AttributeError, KeyError, TypeError, IndexError, IOError, OSError, ZeroDivisionError, ImportError, NameError, RuntimeError) as e:
-            print(f"Error: {e}")
+            print(f"{type(e).__name__}: {e}")
         except (ValueError) as e:
             print(e)
         except Exception as e:
-            print(f"Not error: {e}")
+            print(f"{type(e).__name__}: {e}")

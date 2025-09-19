@@ -38,9 +38,15 @@ def my_errors(iduser):
         if iduser in h["members"]:
             teams = data.team.read_teamfile(h["teamleider_id"])
             index = teams["members"].index(iduser)
+            if teams["errors"]==[]:
+                return ["None found"]
             m = teams["errors"][index]
             a = []
-            for i in m: a.append(give_error(i))
+            if len(str(m))==1:
+                a.append(give_error(m))
+            else:
+                print(2)
+                for i in m: a.append(give_error(i))
             return a
     return ["None found"]
 
@@ -52,14 +58,22 @@ def my_give(iduser):
         if iduser in h["members"]:
             teams = data.team.read_teamfile(h["teamleider_id"])
             index = teams["members"].index(iduser)
+            if teams["give"]==[]:
+                return ["None found"]
             m = teams["give"][index]
             a = []
-            for i in m: a.append(give_give(i))
+            if len(str(m))==1:
+                a.append(give_give(m))
+            else:
+                print(2)
+                for i in m: a.append(give_give(i))
             return a
     return ["None found"]
 
 def cal_errors(iduser):
     m = my_errors(iduser)
+    if m == ["None found"]:
+        return 0
     t=0
     for i in m:
         t+=i["point"]
@@ -67,6 +81,8 @@ def cal_errors(iduser):
 
 def cal_give(iduser):
     m = my_give(iduser)
+    if m == ["None found"]:
+        return 0
     t=0
     for i in m:
         t+=i["point"]

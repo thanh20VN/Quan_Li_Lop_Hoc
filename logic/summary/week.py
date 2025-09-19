@@ -25,6 +25,14 @@ def generate_weekly_summary():
                         "total": tot,
                         "ratings": rat
                     }
+            print(t4,t1)
             data.summary.write(i["id_team"], t4, "week")
             t2[t1["teamleider_id"]] = t4
+    # data.team.remove_give_error()
+    t9=data.team.read_mainfile()
+    for i in t9["idteam"]:
+        t8=data.team.read_teamfile(i["id_team"])
+        t8["errors"]=[]
+        t8["give"]=[]
+        data.team.write_teamfile(i["id_team"],t8)
     return t2
