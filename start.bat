@@ -1,2 +1,2 @@
-.\venv\Scripts\activate.bat
+.\env\Scripts\activate.bat
 python cli.py

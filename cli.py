@@ -31,33 +31,29 @@ def teacher(id):
                     team = input("Name team: ")
                     import logic.team
                     logic.team.team(team,id)
-                if logic.reg.register(user, password, id+1, role):
-                    print("User registered successfully.")
-                else:
-                    print("Failed to register user.")
+                logic.reg.register(user, password, id+1, role)
+                # ...
             elif cmd == "add":
                 team_name = str(input("Team Name: "))
                 user_name = str(input("User name: "))
                 user_id = data.find_user_name(user_name).get("id")
                 team_id = data.team.find_team(team_name)
                 print(team_id, user_id)
-                if logic.team.add_member(team_id, user_id):
-                    print("User added to team successfully.")
-                else:
-                    print("Failed to add user to team.")
+                logic.team.add_member(team_id, user_id)
+                # ...
             elif cmd == "remove":
                 team_name = str(input("Team Name: "))
                 user_name = str(input("User name: "))
                 user_id = data.find_user_name(user_name).get("id")
                 team_id = data.team.find_team(team_name)
-                if logic.team.remove_member(team_id, user_id):
-                    print("User removed from team successfully.")
-                else:
-                    print("Failed to remove user from team.")
-        except (AttributeError, KeyError, TypeError, ValueError, IndexError, IOError, OSError, ZeroDivisionError, ImportError, NameError, RuntimeError) as e:
-            print(f"Lỗi: {e}")
+                logic.team.remove_member(team_id, user_id)
+                # ...
+        except (AttributeError, KeyError, TypeError, IndexError, IOError, OSError, ZeroDivisionError, ImportError, NameError, RuntimeError) as e:
+            print(f"Error: {e}")
+        except (ValueError) as e:
+            print(e)
         except Exception as e:
-            print(f"Lỗi không xác định: {e}")
+            print(f"Not error: {e}")
 
 def class_monitor(id):
     print(f"Welcome, {data.find_user(id).get('name')}, Role: {data.find_user(id).get('role')}")
@@ -85,17 +81,13 @@ def class_monitor(id):
                 if input_type == "error":
                     error_id = int(input("Error ID: "))
                     import logic.team.add
-                    if logic.team.add.remove_error(id, student_id, error_id):
-                        print("Error removed successfully.")
-                    else:
-                        print("Failed to remove error.")
+                    logic.team.add.remove_error(id, student_id, error_id)
+                    # ...
                 elif input_type == "give":
                     give_id = int(input("Give ID: "))
                     import logic.team.add
-                    if logic.team.add.remove_give(id, student_id, give_id):
-                        print("Give removed successfully.")
-                    else:
-                        print("Failed to remove give.")
+                    logic.team.add.remove_give(id, student_id, give_id)
+                    # ...
             elif cmd == "summary":
                 import logic.summary
                 print('''
@@ -139,10 +131,12 @@ def class_monitor(id):
                     print(logic.summary.year.generate_yearly_summary())
                 else:
                     print("Invalid choice.")
-        except (AttributeError, KeyError, TypeError, ValueError, IndexError, IOError, OSError, ZeroDivisionError, ImportError, NameError, RuntimeError) as e:
-            print(f"Lỗi: {e}")
+        except (AttributeError, KeyError, TypeError, IndexError, IOError, OSError, ZeroDivisionError, ImportError, NameError, RuntimeError) as e:
+            print(f"Error: {e}")
+        except (ValueError) as e:
+            print(e)
         except Exception as e:
-            print(f"Lỗi không xác định: {e}")
+            print(f"Not error: {e}")
 
 def teamleider(id):
     print(f"Welcome, {data.find_user(id).get('name')}, Role: {data.find_user(id).get('role')}")
@@ -174,22 +168,20 @@ def teamleider(id):
                     error_id = int(input("Error ID: "))
                     import logic.team.add
                     for i in range(how):
-                        if logic.team.add.add_error(id, student_id, error_id):
-                            print(f"{i} Error added successfully.")
-                        else:
-                            print(f"{i} Failed to add error.")
+                        logic.team.add.add_error(id, student_id, error_id)
+                        # ...
                 elif input_type == "give":
                     give_id = int(input("Give ID: "))
                     import logic.team.add
                     for i in range(how):
-                        if logic.team.add.add_give(id, student_id, give_id):
-                            print(f"{i} Give added successfully.")
-                        else:
-                            print(f"{i} Failed to add give.")
-        except (AttributeError, KeyError, TypeError, ValueError, IndexError, IOError, OSError, ZeroDivisionError, ImportError, NameError, RuntimeError) as e:
-            print(f"Lỗi: {e}")
+                        logic.team.add.add_give(id, student_id, give_id)
+                        # ...
+        except (AttributeError, KeyError, TypeError, IndexError, IOError, OSError, ZeroDivisionError, ImportError, NameError, RuntimeError) as e:
+            print(f"Error: {e}")
+        except (ValueError) as e:
+            print(e)
         except Exception as e:
-            print(f"Lỗi không xác định: {e}")
+            print(f"Not error: {e}")
 
 def student(id):
     print(f"Welcome, {data.find_user(id).get('name')}, Role: {data.find_user(id).get('role')}")
@@ -216,7 +208,9 @@ def student(id):
                     print(f" - Name: {i['name']}, ID: {i['id']}")
                 print(logic.student.my_error_give.cal_give(id))
                 print("Total:", logic.student.my_error_give.cal_total(id))
-        except (AttributeError, KeyError, TypeError, ValueError, IndexError, IOError, OSError, ZeroDivisionError, ImportError, NameError, RuntimeError) as e:
-            print(f"Lỗi: {e}")
+        except (AttributeError, KeyError, TypeError, IndexError, IOError, OSError, ZeroDivisionError, ImportError, NameError, RuntimeError) as e:
+            print(f"Error: {e}")
+        except (ValueError) as e:
+            print(e)
         except Exception as e:
-            print(f"Lỗi không xác định: {e}")
+            print(f"Not error: {e}")

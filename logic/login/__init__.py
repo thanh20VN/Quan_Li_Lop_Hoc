@@ -6,5 +6,5 @@ def login(username, password):
     password = hashlib.md5(password.encode()).hexdigest()
     for user in users:
         if user['name'] == username and user['password'] == password:
-            return True
-    return False
+            raise ValueError("Login successful.")
+    raise ValueError("Login failed: Invalid username or password.")

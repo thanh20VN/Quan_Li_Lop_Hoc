@@ -86,6 +86,6 @@ def create(teamleider_id, type):
     
     if not os.path.exists(file_path):
         with open(file_path, "w", encoding="utf-8") as f: f.write("{}")
-        return True
+        raise ValueError("Summary created successfully.")
     else:
-        return False
+        raise ValueError("Summary already exists.")

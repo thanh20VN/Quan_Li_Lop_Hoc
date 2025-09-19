@@ -37,11 +37,13 @@ def list_teams(id):
     import data
     if check_team(id):
         teams = read_teamfile(id)
-        men=[]
+        men = []
         for member_id in teams["members"]:
             member = data.find_user(member_id)
             if member:
                 men.append((member['name'], member['id']))
+        if not men:
+            raise ValueError("No members found for this teamleider.")
         return men
     else:
-        return ["No team found for this teamleider."]
+        raise ValueError("No team found for this teamleider.")
