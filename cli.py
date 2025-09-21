@@ -23,6 +23,7 @@ def teacher(id):
                 import logic.student
                 logic.student.list_students()
             elif cmd == "register":
+                import logic
                 user = input("Name: ")
                 password = getpass.getpass("Password: ")
                 id = len(data.UserData)
@@ -114,7 +115,7 @@ def class_monitor(id):
                     for i in t:
                         # print(i)
                         for j in i.values():
-                            print(j)
+                            # print(j)
                             print("Name:", j["name"])
                             print("Ratings:", j["ratings"])
                             print("Total:", str(j["total"]))

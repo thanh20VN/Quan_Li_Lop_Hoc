@@ -35,11 +35,11 @@ def generate_weekly_summary():
                     if h>=len(t8[2]): break
                     if t8[2][h][0]==0: t8[2].pop(h)
         t7.append([t6[jj][0],t8])
+    print(t7)
+        # t7[0][1][2].append([1,'Very good'])
+        # t7[0][1][2].append([16,'Good'])
+        # for j in t7:
+            # for h in range(1,len(j)): j[h][2]=sorted(j[h][2],reverse=True)[0]
         # print(t7)
-        t7[0][1][2].append([1,'Very good'])
-        t7[0][1][2].append([16,'Good'])
-        for j in t7:
-            for h in range(1,len(j)): j[h][2]=sorted(j[h][2],reverse=True)[0]
-        print(t7)
 
-# generate_weekly_summary()
+generate_weekly_summary()
