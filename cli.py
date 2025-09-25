@@ -102,34 +102,44 @@ def class_monitor(id):
                 choice = input("Choose an option (1/2/3): ")
                 if choice == "1":
                     tt=data.summary.read_main("week")
-                    if data.summary.read_main("semester")["num"] == 1:
-                        if tt["num"] == 18:
+                    if data.summary.read_main("semester")["num"] == 0:
+                        if tt["num"] >= 18:
+                            print("Max week")
+                            continue
+                    elif data.summary.read_main("semester")["num"] == 1:
+                        if tt["num"] >= 17:
                             print("Max week")
                             continue
                     elif data.summary.read_main("semester")["num"] == 2:
-                        if tt["num"] == 17:
-                            print("Max week")
+                            print("Max semester")
                             continue
                     t=logic.summary.week.generate_weekly_summary().values()
-                    # print(t)
                     for i in t:
-                        # print(i)
                         for j in i.values():
-                            # print(j)
                             print("Name:", j["name"])
                             print("Ratings:", j["ratings"])
                             print("Total:", str(j["total"]))
                 elif choice == "2":
                     tt=data.summary.read_main("week")
-                    if data.summary.read_main("semester")["num"] == 1:
-                        if tt["num"] != 18:
-                            print("Not enough week")
+                    # print(tt["num"],type(tt["num"]))
+                    if data.summary.read_main("semester")["num"] == 0:
+                        if not tt["num"] <= 18:
+                            print("Not enough week semester 1")
                             continue
-
+                    elif data.summary.read_main("semester")["num"] == 1:
+                        if not tt["num"] <= 17:
+                            print("Not enough week semester 2")
+                            continue
                     elif data.summary.read_main("semester")["num"] == 2:
-                        if tt["num"] != 17:
-                            print("Not enough week")
+                            print("Max semester")
                             continue
+                    t=logic.summary.semester.generate_weekly_summary()
+                    for i in t:
+                        print("Team ID:", i[0])
+                        for j in i[1]:
+                            print("Name:", j[0])
+                            print("Total:", str(j[1]))
+                            print("Ratings:", j[2])
                 elif choice == "3":
                     print(logic.summary.year.generate_yearly_summary())
                 else:

@@ -7,7 +7,6 @@ def generate_weekly_summary():
     t2={}
     for i in t["idteam"]: 
         if data.team.check_team(i["id_team"]):
-            print(i["id_team"])
             t1=data.team.read_teamfile(i["id_team"])
             t4={}
             for j in t1["members"]:

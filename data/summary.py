@@ -1,6 +1,9 @@
+import os
+import json
+import shutil
+
 def write(teamleider_id, teams, type):
     with open("./data/summary/{0}/main.json".format(type), "r", encoding="utf-8") as f:
-        import json
         main = json.load(f)
     if type not in ["week", "semester", "year"]:
         raise ValueError("Invalid type. Must be 'week', 'semester', or 'year'.")
@@ -10,8 +13,8 @@ def write(teamleider_id, teams, type):
         file_path = "./data/summary/semester/Team_{0}/{1}.json".format(teamleider_id, main["num"])
     elif type == "year":
         file_path = "./data/summary/year/Team_{0}/{1}.json".format(teamleider_id, main["num"])
-    
-    import json
+    # Tạo thư mục cha nếu chưa tồn tại
+    # os.makedirs(os.path.dirname(file_path), exist_ok=True)
     with open(file_path, "w", encoding="utf-8") as f:
         json.dump(teams, f)
 
@@ -85,4 +88,14 @@ def create(type):
             file_path = "./data/summary/year/Team_{0}/{1}.json".format(teamleider_id, id)
         if not os.path.exists(file_dir):
             os.makedirs(file_dir)
-        with open(file_path, "w", encoding="utf-8") as f: f.write("{}")
+        # with open(file_path, "w", encoding="utf-8") as f: f.write("{}")
+
+
+def remove(teamleider_id, type):
+    import os
+    if type not in ["week", "semester", "year"]:
+        raise ValueError("Invalid type. Must be 'week', 'semester', or 'year'.")
+    else:
+        file_path = "./data/summary/{0}/Team_{1}".format(type,teamleider_id)
+    if os.path.exists(file_path):
+        shutil.rmtree(file_path)
