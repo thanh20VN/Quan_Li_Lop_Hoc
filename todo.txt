@@ -13,6 +13,6 @@ team {cm:2025-09-19}
 team fix {cm:2025-09-19}
 Error / give {cm:2025-09-19}
 summary week {cm:2025-09-19}
-summary year
+summary year {cm:2025-09-29}
 summary semester {cm:2025-09-25}
-fix stuendt
+fix student {cm:2025-09-29}

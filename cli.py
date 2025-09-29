@@ -141,7 +141,18 @@ def class_monitor(id):
                             print("Total:", str(j[1]))
                             print("Ratings:", j[2])
                 elif choice == "3":
-                    print(logic.summary.year.generate_yearly_summary())
+                    # print(data.summary.read_main("semester")["num"],data.summary.read_main("semester")["num"]<=2)
+                    if not data.summary.read_main("semester")["num"] <= 2:
+                        print("Not enough semester")
+                        continue
+                    else:
+                        t=logic.summary.year.generate_weekly_summary()
+                        for i in t:
+                            print("Team ID:", i[0])
+                            for j in i[1]:
+                                print("Name:", j[0])
+                                print("Total:", str(j[1]))    # Đúng thứ tự - Total 
+                                print("Ratings:", j[2])       # Đúng thứ tự - Ratings
                 else:
                     print("Invalid choice.")
         except (AttributeError, KeyError, TypeError, IndexError, IOError, OSError, ZeroDivisionError, ImportError, NameError, RuntimeError) as e:

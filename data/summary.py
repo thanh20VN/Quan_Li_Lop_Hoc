@@ -12,13 +12,18 @@ def write(teamleider_id, teams, type):
     elif type == "semester":
         file_path = "./data/summary/semester/Team_{0}/{1}.json".format(teamleider_id, main["num"])
     elif type == "year":
-        file_path = "./data/summary/year/Team_{0}/{1}.json".format(teamleider_id, main["num"])
+        # file_path = "./data/summary/year/Team_{0}/{1}.json".format(teamleider_id
+        # , main["num"])
+        with open("./data/summary/year/End.json", "w", encoding="utf-8") as f:
+            json.dump(teams, f)
+        return
     # Tạo thư mục cha nếu chưa tồn tại
     # os.makedirs(os.path.dirname(file_path), exist_ok=True)
     with open(file_path, "w", encoding="utf-8") as f:
         json.dump(teams, f)
 
 def read(teamleider_id, type, id):
+    import json
     if type not in ["week", "semester", "year"]:
         raise ValueError("Invalid type. Must be 'week', 'semester', or 'year'.")
     elif type == "week":
@@ -26,11 +31,16 @@ def read(teamleider_id, type, id):
     elif type == "semester":
         file_path = "./data/summary/semester/Team_{0}/{1}.json".format(teamleider_id, id)
     elif type == "year":
-        file_path = "./data/summary/year/Team_{0}/{1}.json".format(teamleider_id, id)
-    
-    import json
-    with open(file_path, "r", encoding="utf-8") as f:
-        teams = json.load(f)
+        # file_path = "./data/summary/year/Team_{0}/{1}.json".format(teamleider_id, id)
+        file_path = "./data/summary/year/End.json"
+    if not os.path.exists(file_path):
+        raise FileNotFoundError(f"No summary found for teamleider_id {teamleider_id}, type {type}, id {id}")
+    else:
+        with open(file_path, "r", encoding="utf-8") as f:
+            teams = json.load(f)
+    if not teams:
+        with open(file_path, "r", encoding="utf-8") as f:
+            teams = json.load(f)
     return teams
 
 def list_summaries(teamleider_id,type):
@@ -83,9 +93,6 @@ def create(type):
         elif type == "semester":
             file_dir = "./data/summary/semester/Team_{0}/".format(teamleider_id)
             file_path = "./data/summary/semester/Team_{0}/{1}.json".format(teamleider_id, id-1)
-        elif type == "year":
-            file_dir = "./data/summary/year/Team_{0}/".format(teamleider_id)
-            file_path = "./data/summary/year/Team_{0}/{1}.json".format(teamleider_id, id)
         if not os.path.exists(file_dir):
             os.makedirs(file_dir)
         # with open(file_path, "w", encoding="utf-8") as f: f.write("{}")
@@ -93,7 +100,7 @@ def create(type):
 
 def remove(teamleider_id, type):
     import os
-    if type not in ["week", "semester", "year"]:
+    if type not in ["week", "semester"]:
         raise ValueError("Invalid type. Must be 'week', 'semester', or 'year'.")
     else:
         file_path = "./data/summary/{0}/Team_{1}".format(type,teamleider_id)
