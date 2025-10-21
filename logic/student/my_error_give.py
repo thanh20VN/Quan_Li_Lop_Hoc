@@ -18,7 +18,7 @@ def list_errors(id):
     teams = data_py.error.read_errorfile("e")
     for er in teams["errors"]:
         if er["id"] == id:
-            print(f" - {er['error']} ")
+            # print(f" - {er['error']} ")
             return True
     return False
 
@@ -26,7 +26,7 @@ def list_give(id):
     teams = data_py.eg.read_egfile("g")
     for er in teams["give"]:
         if er["id"] == id:
-            print(f" - {er['give']} ")
+            # print(f" - {er['give']} ")
             return True
     return False
 
@@ -45,7 +45,7 @@ def my_errors(iduser):
             if len(str(m))==1:
                 a.append(give_error(m))
             else:
-                print(2)
+                # print(2)
                 for i in m: a.append(give_error(i))
             return a
     return ["None found"]
@@ -65,7 +65,7 @@ def my_give(iduser):
             if len(str(m))==1:
                 a.append(give_give(m))
             else:
-                print(2)
+                # print(2)
                 for i in m: a.append(give_give(i))
             return a
     return ["None found"]

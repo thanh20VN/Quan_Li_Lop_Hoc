@@ -25,25 +25,24 @@ def read_mainfile():
     return teams
 
 def find_team(teamleider_name):
-    import data
-    list = data.find_role("teamleider")
-    for teamleider in list:
-        if check_team(teamleider["id"]):
-            teams = data.team.read_teamfile(teamleider["id"])
-            if teams["name"] == teamleider_name:
-                return teamleider["id"]
+    import data_py
+    t=read_mainfile()
+    for team in t["idteam"]:
+        h=data_py.team.read_teamfile(team["id_team"])
+        if h["name"]==teamleider_name:
+            return team["id_team"]
 
 def list_teams(id):
-    import data
+    import data_py
     if check_team(id):
         teams = read_teamfile(id)
         men = []
         for member_id in teams["members"]:
-            member = data.find_user(member_id)
+            member = data_py.find_user(member_id)
             if member:
                 men.append((member['name'], member['id']))
         if not men:
-            return "No members found for this teamleider."
+            return "Không có thành viên nào."
         return men
     else:
-        return "No team found for this teamleider."
+        return "Không tìm thấy team."

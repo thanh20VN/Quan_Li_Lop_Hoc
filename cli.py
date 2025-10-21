@@ -23,17 +23,29 @@ def teacher(id):
                 ''')
             elif cmd == "list":
                 import logic.student
-                logic.student.list_students()
+                for i in logic.student.list_students():
+                    print(f" - Tên: {i[0]}, ID: {i[1]}")
             elif cmd == "register":
                 import logic
                 user = input("Tên: ")
                 password = getpass.getpass("Mật khẩu: ")
-                id = len(data_py.UserData_py)
-                role = input("Vai trò (admin, teacher, class monitor, teamleider, student): ")
+                id = len(data_py.UserData)
+                print('''
+                    Vai trò có thể là: 
+                      1. Giáo viên
+                      2. Lớp trưởng
+                      3. Tổ trưởng
+                      4. Học sinh
+                ''')
+                roid = input("Vai trò : ")
+                if roid == "1": role = "teacher"
+                if roid == "2": role = "class monitor"
+                if roid == "3": role = "teamleider"
+                if roid == "4": role = "student"
                 if role == "teamleider":
                     team = input("Tên nhóm: ")
                     import logic.team
-                    logic.team.team(team,id)
+                    logic.team.create_team(team,id)
                 t=logic.reg.register(user, password, id+1, role)
                 if isinstance(t, str):print(t)
                 # ...
@@ -56,6 +68,7 @@ def teacher(id):
                 if isinstance(t, str):print(t)
                 # ...
             elif cmd == "export":
+                import logic.export
                 print('''
                     Loại xuất:
                         1. Xuất Tuần
@@ -72,12 +85,12 @@ def teacher(id):
                         t2=input("Nhập tuần bạn muốn xuất (1 -"+str(t1["num"])+"): ")
                     t3=data_py.team.read_mainfile()
                     t4=[]
-                    for i in t3["idteam"]:t4.append(k["id_team"])
+                    for i in t3["idteam"]:t4.append(i["id_team"])
                     t5={}
                     for i in t4:
                         t6=data_py.summary.read(i, "week", t2)
                         t5[str(i)]=t6
-                    t=logic.export.week(t5)
+                    t=logic.export.week.__init__(t5)
                     if isinstance(t, str):print(t)
                 elif choice == "2":
                     t1=data_py.summary.read_main("semester")
@@ -88,19 +101,19 @@ def teacher(id):
                         t2=input("Nhập học kỳ bạn muốn xuất (1 -"+str(t1["num"])+"): ")
                     t3=data_py.team.read_mainfile()
                     t4=[]
-                    for i in t3["idteam"]:t4.append(k["id_team"])
+                    for i in t3["idteam"]:t4.append(i["id_team"])
                     t5={}
                     for i in t4:
                         t6=data_py.summary.read(i, "semester", t2)
                         t5[str(i)]=t6['students']
-                    t=logic.export.semester(t5)
+                    t=logic.export.semester.__init__(t5)
                     if isinstance(t, str):print(t)
                 elif choice == "3":
                     t1=data_py.summary.read_main("semester")
                     if  t1["num"] == 2:
                         t3=data_py.team.read_mainfile()
                         t5=data_py.summary.read(1, "year", 1)
-                        t=logic.export.year(t5)
+                        t=logic.export.year.__init__(t5)
                         if isinstance(t, str):print(t)
                     else:
                         print("Chưa đủ học kỳ để xuất báo cáo năm.")
@@ -133,7 +146,8 @@ def class_monitor(id):
                 ''')
             elif cmd == "list":
                 import logic.student
-                logic.student.list_students()
+                for i in logic.student.list_students():
+                    print(f" - Tên: {i[0]}, ID: {i[1]}")
             elif cmd == "remove":
                 input_type = str(input("Type (error/give): "))
                 student_name = str(input("Student name: "))
@@ -251,7 +265,9 @@ def teamleider(id):
                     add: Thêm lỗi hoặc cho một học sinh trong nhóm của tôi
                 ''')
             elif cmd == "list":
-                for i in data_py.team.list_teams(id):
+                t=data_py.team.list_teams(id)
+                if isinstance(t, str):print(t);continue
+                for i in t:
                     print(f" - Tên: {i[0]}, ID: {i[1]}")
             elif cmd == "add":
                 input_type = str(input("Loại (error/give): "))
@@ -300,11 +316,11 @@ def student(id):
                 print("Điểm trừ của tôi:")
                 for i in logic.student.my_error_give.my_errors(id):
                     print(f" - Loại: {i['name']}, ID: {i['id']}")
-                print(logic.student.my_error_give.cal_errors(id))
+                print("Điểm trừ của tôi:", logic.student.my_error_give.cal_errors(id))
                 print("Điểm cộng của tôi:")
                 for i in logic.student.my_error_give.my_give(id):
                     print(f" - Loại: {i['name']}, ID: {i['id']}")
-                print(logic.student.my_error_give.cal_give(id))
+                print("Điểm cộng của tôi:", logic.student.my_error_give.cal_give(id))
                 print("Tổng:", logic.student.my_error_give.cal_total(id))
         except (AttributeError, KeyError, TypeError, IndexError, IOError, OSError, ZeroDivisionError, ImportError, NameError, RuntimeError) as e:
             print(f"{type(e).__name__}: {e}")

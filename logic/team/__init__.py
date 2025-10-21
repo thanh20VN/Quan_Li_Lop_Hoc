@@ -3,11 +3,12 @@ import logic.team.add
 import logic.team.remove
 
 def create_team(name, teamleider_id):
-    teams = {"name": name, "teamleider_id": teamleider_id, "members": [], "errors": [], "give": []}
-    data_py.team.write_teamfile(teamleider_id, teams)
-    m=data_py.team.read_mainfile(teamleider_id)
-    m["idteam"].append({"name":name,"id_team":teamleider_id})
-    return "Create team successfully"
+    teams = {"name": name, "teamleider_id": teamleider_id+1, "members": [teamleider_id+1], "errors": [[]], "give": [[]]}
+    data_py.team.write_teamfile(teamleider_id+1, teams)
+    m=data_py.team.read_mainfile()
+    m["idteam"].append({"name":name,"id_team":teamleider_id+1})
+    data_py.team.write_mainfile(m)
+    return "Tạo team thành công."
 
 def add_member(teamleider_id, user_id):
     if data_py.team.check_team(teamleider_id):
@@ -17,11 +18,11 @@ def add_member(teamleider_id, user_id):
             teams["errors"].append([])
             teams["give"].append([])
             data_py.team.write_teamfile(teamleider_id, teams)
-            return "Successfully add menber"
+            return "Thêm thành viên thành công"
         else:
-            return "Nember in team"
+            return "Thành viên đã có trong team"
     else:
-        return "Not find out team"
+        return "Không tìm thấy team"
 
 def remove_member(teamleider_id, user_id):
     if data_py.team.check_team(teamleider_id):
