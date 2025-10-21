@@ -1,0 +1,3 @@
+semester_1=18
+semester_2=17
+semester_total=semester_1+semester_2

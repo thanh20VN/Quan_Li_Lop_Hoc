@@ -1,22 +1,34 @@
-import data
+import data_py
 import logic
+import config
 
 
 def generate_weekly_summary():
-    t=data.team.read_mainfile()
-    data.summary.create("semester")
+    t=data_py.team.read_mainfile()
     t6=[]
     for i in t["idteam"]: 
-        if data.team.check_team(i["id_team"]):
-            t2=data.summary.read_main("week")
+        if data_py.team.check_team(i["id_team"]):
+            t2=data_py.summary.read_main("week")
             t3=[]
-            for h in range(t2["num"]):
-                t5=[]
-                t4=data.summary.read(i["id_team"],"week",h+1)
-                for j in t4.values(): t5.append([j["name"], j["total"], j["ratings"]])
-                t3.append(t5)
+            t8=data_py.summary.read_main("semester")
+            if t8["num"]==0:
+                print(1)
+                for h in range(t2["num"]):
+                    t5=[]
+                    t4=data_py.summary.read(i["id_team"],"week",h+1)
+                    for j in t4.values(): t5.append([j["name"], j["total"], j["ratings"]])
+                    t3.append(t5)
+            elif t8["num"]==1:
+                print(2)
+                for h in range(config.semester_1+1,t2["num"]+1):
+                    t5=[]
+                    t4=data_py.summary.read(i["id_team"],"week",h+1)
+                    for j in t4.values(): t5.append([j["name"], j["total"], j["ratings"]])
+                    t3.append(t5)
             t6.append([int(i["id_team"]),t3])
             t3=[]
+    # print(t6)
+    data_py.summary.create("semester")
     t7=[]
     for i in range(len(t6)):
         t7.append([t6[i][0], []])
@@ -44,14 +56,15 @@ def generate_weekly_summary():
         for j in range(len(t7[i][1])):
             t7[i][1][j][2].sort(reverse=True)
             t7[i][1][j][2] = t7[i][1][j][2][0][1]
-    for i in t7: data.summary.write(i[0],{"students":i[1]},"semester")
+    for i in t7: data_py.summary.write(i[0],{"students":i[1]},"semester")
     # print(t7)
-    for i in t["idteam"]: data.summary.remove(i["id_team"], "week")
-    with open("./data/summary/{0}/main.json".format("week"), "r", encoding="utf-8") as f:
-        import json
-        main = json.load(f)
-        main["num"] = 0
+    # print(t7)
+    # for i in t["idteam"]: data_py.summary.remove(i["id_team"], "week")
+    # with open("./data_py/summary/{0}/main.json".format("week"), "r", encoding="utf-8") as f:
+    #     import json
+    #     main = json.load(f)
+    #     main["num"] = 0
 
-    with open("./data/summary/{0}/main.json".format("week"), "w", encoding="utf-8") as f:
-        json.dump(main, f)
+    # with open("./data_py/summary/{0}/main.json".format("week"), "w", encoding="utf-8") as f:
+    #     json.dump(main, f)
     return t7

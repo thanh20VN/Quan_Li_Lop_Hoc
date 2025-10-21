@@ -15,7 +15,7 @@ def load_users():
     with open("./data/User.json", "r", encoding="utf-8") as f:
         global UserData
         UserData = json.load(f)
-    raise ValueError("Users loaded successfully.")
+    return "Users loaded successfully."
 
 def find_user(id):
     for user in UserData.values():
@@ -27,7 +27,7 @@ def find_user_name(name):
     for user in UserData.values():
         if user["name"] == name:
             return {"name": user["name"], "id": user["id"], "role": user["role"]}
-    raise ValueError("User not found.")
+    # raise ValueError("User not found.")
 
 def create_user(name, password, id, role):
     import json

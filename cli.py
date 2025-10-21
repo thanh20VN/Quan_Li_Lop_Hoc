@@ -1,9 +1,10 @@
-import data
+import data_py
 import logic
 import getpass
+import config
 
 def teacher(id):
-    print(f"Welcome, {data.find_user(id).get('name')}, Role: {data.find_user(id).get('role')}")
+    print(f"Welcome, {data_py.find_user(id).get('name')}, Role: {data_py.find_user(id).get('role')}")
     print("Type 'exit' to quit.")
     print("Type 'help' for help.")
     while True:
@@ -26,7 +27,7 @@ def teacher(id):
                 import logic
                 user = input("Name: ")
                 password = getpass.getpass("Password: ")
-                id = len(data.UserData)
+                id = len(data_py.UserData_py)
                 role = input("Role (admin, teacher, class monitor, teamleider, student): ")
                 if role == "teamleider":
                     team = input("Name team: ")
@@ -38,16 +39,16 @@ def teacher(id):
                 import logic
                 team_name = str(input("Team Name: "))
                 user_name = str(input("User name: "))
-                user_id = data.find_user_name(user_name).get("id")
-                team_id = data.team.find_team(team_name)
+                user_id = data_py.find_user_name(user_name).get("id")
+                team_id = data_py.team.find_team(team_name)
                 # print(team_id, user_id)
                 logic.team.add_member(team_id,user_id)
                 # ...
             elif cmd == "remove":
                 team_name = str(input("Team Name: "))
                 user_name = str(input("User name: "))
-                user_id = data.find_user_name(user_name).get("id")
-                team_id = data.team.find_team(team_name)
+                user_id = data_py.find_user_name(user_name).get("id")
+                team_id = data_py.team.find_team(team_name)
                 logic.team.remove_member(team_id, user_id)
                 # ...
         except (AttributeError, KeyError, TypeError, IndexError, IOError, OSError, ZeroDivisionError, ImportError, NameError, RuntimeError) as e:
@@ -59,7 +60,7 @@ def teacher(id):
             print(f"{type(e).__name__}: {e}")
 
 def class_monitor(id):
-    print(f"Welcome, {data.find_user(id).get('name')}, Role: {data.find_user(id).get('role')}")
+    print(f"Welcome, {data_py.find_user(id).get('name')}, Role: {data_py.find_user(id).get('role')}")
     print("Type 'exit' to quit.")
     print("Type 'help' for help.")
     while True:
@@ -80,7 +81,7 @@ def class_monitor(id):
             elif cmd == "remove":
                 input_type = str(input("Type (error/give): "))
                 student_name = str(input("Student name: "))
-                student_id = data.find_user_name(student_name).get("id")
+                student_id = data_py.find_user_name(student_name).get("id")
                 if input_type == "error":
                     error_id = int(input("Error ID: "))
                     import logic.team.add
@@ -101,38 +102,37 @@ def class_monitor(id):
                 ''')
                 choice = input("Choose an option (1/2/3): ")
                 if choice == "1":
-                    tt=data.summary.read_main("week")
-                    if data.summary.read_main("semester")["num"] == 0:
-                        if tt["num"] >= 18:
-                            print("Max week")
-                            continue
-                    elif data.summary.read_main("semester")["num"] == 1:
-                        if tt["num"] >= 17:
-                            print("Max week")
-                            continue
-                    elif data.summary.read_main("semester")["num"] == 2:
+                    tt=data_py.summary.read_main("week")
+                    if data_py.summary.read_main("semester")["num"] == 0 and tt["num"] >= config.semester_1:
+                        print("Max week")
+                        continue
+                    elif data_py.summary.read_main("semester")["num"] == 1 and tt["num"] == config.semester_total:
+                        print("Max week")
+                        continue
+                    elif data_py.summary.read_main("semester")["num"] == 2:
                             print("Max semester")
                             continue
                     t=logic.summary.week.generate_weekly_summary().values()
                     for i in t:
+                        print("Team ID:", next(iter(i)))
                         for j in i.values():
                             print("Name:", j["name"])
+                            print("Give:", j["give"])
+                            print("Error:", j["error"])
                             print("Ratings:", j["ratings"])
                             print("Total:", str(j["total"]))
                 elif choice == "2":
-                    tt=data.summary.read_main("week")
+                    tt=data_py.summary.read_main("week")
                     # print(tt["num"],type(tt["num"]))
-                    if data.summary.read_main("semester")["num"] == 0:
-                        if not tt["num"] <= 18:
-                            print("Not enough week semester 1")
-                            continue
-                    elif data.summary.read_main("semester")["num"] == 1:
-                        if not tt["num"] <= 17:
-                            print("Not enough week semester 2")
-                            continue
-                    elif data.summary.read_main("semester")["num"] == 2:
-                            print("Max semester")
-                            continue
+                    if data_py.summary.read_main("semester")["num"] == 0 and not tt["num"] <= config.semester_1:
+                        print("Not enough week semester 1")
+                        continue
+                    elif data_py.summary.read_main("semester")["num"] == 1 and not tt["num"] == config.semester_total:
+                        print("Not enough week semester 2")
+                        continue
+                    elif data_py.summary.read_main("semester")["num"] == 2:
+                        print("Max semester")
+                        continue
                     t=logic.summary.semester.generate_weekly_summary()
                     for i in t:
                         print("Team ID:", i[0])
@@ -141,8 +141,8 @@ def class_monitor(id):
                             print("Total:", str(j[1]))
                             print("Ratings:", j[2])
                 elif choice == "3":
-                    # print(data.summary.read_main("semester")["num"],data.summary.read_main("semester")["num"]<=2)
-                    if not data.summary.read_main("semester")["num"] <= 2:
+                    # print(data_py.summary.read_main("semester")["num"],data_py.summary.read_main("semester")["num"]<=2)
+                    if not data_py.summary.read_main("semester")["num"] <= 2:
                         print("Not enough semester")
                         continue
                     else:
@@ -164,7 +164,7 @@ def class_monitor(id):
             print(f"{type(e).__name__}: {e}")
 
 def teamleider(id):
-    print(f"Welcome, {data.find_user(id).get('name')}, Role: {data.find_user(id).get('role')}")
+    print(f"Welcome, {data_py.find_user(id).get('name')}, Role: {data_py.find_user(id).get('role')}")
     print("Type 'exit' to quit.")
     print("Type 'help' for help.")
     while True:
@@ -179,7 +179,7 @@ def teamleider(id):
                     add: add error or give to a student in my team
                 ''')
             elif cmd == "list":
-                for i in data.team.list_teams(id):
+                for i in data_py.team.list_teams(id):
                     print(f" - Name: {i[0]}, ID: {i[1]}")
             elif cmd == "add":
                 input_type = str(input("Type (error/give): "))
@@ -188,7 +188,7 @@ def teamleider(id):
                 while how <= 0:
                     print("Please enter a positive number.")
                     how = int(input("How many: "))
-                student_id = data.find_user_name(student_name).get("id")
+                student_id = data_py.find_user_name(student_name).get("id")
                 if input_type == "error":
                     error_id = int(input("Error ID: "))
                     import logic.team.add
@@ -209,7 +209,7 @@ def teamleider(id):
             print(f"{type(e).__name__}: {e}")
 
 def student(id):
-    print(f"Welcome, {data.find_user(id).get('name')}, Role: {data.find_user(id).get('role')}")
+    print(f"Welcome, {data_py.find_user(id).get('name')}, Role: {data_py.find_user(id).get('role')}")
     print("Type 'exit' to quit.")
     print("Type 'help' for help.")
     while True:
