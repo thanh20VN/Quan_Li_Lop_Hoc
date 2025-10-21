@@ -34,7 +34,7 @@ def create_user(name, password, id, role):
     UserData[id-1] = {"name": name, "password": password, "id": id, "role": role}
     with open("./data/User.json", "w", encoding="utf-8") as f:
         json.dump(UserData, f)
-    raise "User created successfully."
+    return "User created successfully."
 
 def delete_user(id):
     import json
