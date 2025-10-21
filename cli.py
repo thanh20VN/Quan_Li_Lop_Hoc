@@ -4,52 +4,108 @@ import getpass
 import config
 
 def teacher(id):
-    print(f"Welcome, {data_py.find_user(id).get('name')}, Role: {data_py.find_user(id).get('role')}")
-    print("Type 'exit' to quit.")
-    print("Type 'help' for help.")
+    print(f"Chào mừng, {data_py.find_user(id).get('name')}, Vai trò: {data_py.find_user(id).get('role')}")
+    print("Nhập 'exit' để thoát phần miền.")
+    print("Nhập 'help' để biết thêm thông tin.")
     while True:
         try:
             cmd = input("> ")
             if cmd == "exit": break
             elif cmd == "help":
                 print('''
-                    exit: Exit the program
-                    help: Show this help message
-                    list: List all students
-                    register: Register a new user
-                    add: add a user to a team
-                    remove: remove a user from a team
+                    exit: Thoát phần miền
+                    help: Hiển thị thông tin trợ giúp
+                    list: Liệt kê tất cả học sinh
+                    register: Đăng ký người dùng mới
+                    add: Thêm người dùng vào nhóm
+                    remove: Xóa người dùng khỏi nhóm
+                    export: Xuất file excel của lớp học
                 ''')
             elif cmd == "list":
                 import logic.student
                 logic.student.list_students()
             elif cmd == "register":
                 import logic
-                user = input("Name: ")
-                password = getpass.getpass("Password: ")
+                user = input("Tên: ")
+                password = getpass.getpass("Mật khẩu: ")
                 id = len(data_py.UserData_py)
-                role = input("Role (admin, teacher, class monitor, teamleider, student): ")
+                role = input("Vai trò (admin, teacher, class monitor, teamleider, student): ")
                 if role == "teamleider":
-                    team = input("Name team: ")
+                    team = input("Tên nhóm: ")
                     import logic.team
                     logic.team.team(team,id)
-                logic.reg.register(user, password, id+1, role)
+                t=logic.reg.register(user, password, id+1, role)
+                if isinstance(t, str):print(t)
                 # ...
             elif cmd == "add":
                 import logic
-                team_name = str(input("Team Name: "))
-                user_name = str(input("User name: "))
+                team_name = str(input("Tên nhóm: "))
+                user_name = str(input("Tên người dùng: "))
                 user_id = data_py.find_user_name(user_name).get("id")
                 team_id = data_py.team.find_team(team_name)
                 # print(team_id, user_id)
-                logic.team.add_member(team_id,user_id)
+                t=logic.team.add_member(team_id,user_id)
+                if isinstance(t, str):print(t)
                 # ...
             elif cmd == "remove":
-                team_name = str(input("Team Name: "))
-                user_name = str(input("User name: "))
+                team_name = str(input("Tên nhóm: "))
+                user_name = str(input("Tên người dùng: "))
                 user_id = data_py.find_user_name(user_name).get("id")
                 team_id = data_py.team.find_team(team_name)
-                logic.team.remove_member(team_id, user_id)
+                t=logic.team.remove_member(team_id, user_id)
+                if isinstance(t, str):print(t)
+                # ...
+            elif cmd == "export":
+                print('''
+                    Loại xuất:
+                        1. Xuất Tuần
+                        2. Xuất Học Kỳ
+                        3. Xuất Năm
+                ''')
+                choice = input("Chọn một tùy chọn (1/2/3): ")
+                if choice == "1":
+                    t1=data_py.summary.read_main("week")
+                    for i in range(1, t1["num"]+1):print("Tuần",i)
+                    t2=input("Nhập tuần bạn muốn xuất (1 -"+str(t1["num"])+"): ")
+                    while not t2.isdigit() or not (1 <= int(t2) <= t1["num"]):
+                        print("Vui lòng nhập một số hợp lệ.")
+                        t2=input("Nhập tuần bạn muốn xuất (1 -"+str(t1["num"])+"): ")
+                    t3=data_py.team.read_mainfile()
+                    t4=[]
+                    for i in t3["idteam"]:t4.append(k["id_team"])
+                    t5={}
+                    for i in t4:
+                        t6=data_py.summary.read(i, "week", t2)
+                        t5[str(i)]=t6
+                    t=logic.export.week(t5)
+                    if isinstance(t, str):print(t)
+                elif choice == "2":
+                    t1=data_py.summary.read_main("semester")
+                    for i in range(1, t1["num"]+1):print("Học kỳ",i)
+                    t2=input("Nhập học kỳ bạn muốn xuất (1 -"+str(t1["num"])+"): ")
+                    while not t2.isdigit() or not (1 <= int(t2) <= t1["num"]):
+                        print("Vui lòng nhập một số hợp lệ.")
+                        t2=input("Nhập học kỳ bạn muốn xuất (1 -"+str(t1["num"])+"): ")
+                    t3=data_py.team.read_mainfile()
+                    t4=[]
+                    for i in t3["idteam"]:t4.append(k["id_team"])
+                    t5={}
+                    for i in t4:
+                        t6=data_py.summary.read(i, "semester", t2)
+                        t5[str(i)]=t6['students']
+                    t=logic.export.semester(t5)
+                    if isinstance(t, str):print(t)
+                elif choice == "3":
+                    t1=data_py.summary.read_main("semester")
+                    if  t1["num"] == 2:
+                        t3=data_py.team.read_mainfile()
+                        t5=data_py.summary.read(1, "year", 1)
+                        t=logic.export.year(t5)
+                        if isinstance(t, str):print(t)
+                    else:
+                        print("Chưa đủ học kỳ để xuất báo cáo năm.")
+                else:
+                    print("Lựa chọn không hợp lệ.")
                 # ...
         except (AttributeError, KeyError, TypeError, IndexError, IOError, OSError, ZeroDivisionError, ImportError, NameError, RuntimeError) as e:
             import traceback
@@ -60,20 +116,20 @@ def teacher(id):
             print(f"{type(e).__name__}: {e}")
 
 def class_monitor(id):
-    print(f"Welcome, {data_py.find_user(id).get('name')}, Role: {data_py.find_user(id).get('role')}")
-    print("Type 'exit' to quit.")
-    print("Type 'help' for help.")
+    print(f"Chào mừng, {data_py.find_user(id).get('name')}, Vai trò: {data_py.find_user(id).get('role')}")
+    print("Nhập 'exit' để thoát phần miền.")
+    print("Nhập 'help' để biết thêm thông tin.")
     while True:
         try:
             cmd = input("> ")
             if cmd == "exit": break
             elif cmd == "help":
                 print('''
-                    exit: Exit the program
-                    help: Show this help message
-                    list: List all students
-                    remove: remove a error or give from a student in my class
-                    summary: Summary of anything
+                    exit: Thoát phần miền
+                    help: Hiển thị thông tin trợ giúp
+                    list: Liệt kê tất cả học sinh
+                    remove: Xóa một lỗi hoặc phần thưởng của học sinh trong lớp
+                    summary: Tổng kết mọi thứ
                 ''')
             elif cmd == "list":
                 import logic.student
@@ -85,74 +141,90 @@ def class_monitor(id):
                 if input_type == "error":
                     error_id = int(input("Error ID: "))
                     import logic.team.add
-                    logic.team.add.remove_error(id, student_id, error_id)
+                    t=logic.team.add.remove_error(id, student_id, error_id)
+                    if isinstance(t, str):print(t)
                     # ...
                 elif input_type == "give":
                     give_id = int(input("Give ID: "))
                     import logic.team.add
-                    logic.team.add.remove_give(id, student_id, give_id)
+                    t=logic.team.add.remove_give(id, student_id, give_id)
+                    if isinstance(t, str):print(t)
                     # ...
             elif cmd == "summary":
                 import logic.summary
                 print('''
-                    Summary options:
-                    1. Weekly summary
-                    2. Semester summary
-                    3. Yearly summary
+                    Những loại tổng kết:
+                    1. Tổng kết hàng tuần
+                    2. Tổng kết học kỳ
+                    3. Tổng kết hàng năm
                 ''')
-                choice = input("Choose an option (1/2/3): ")
+                choice = input("Chọn một tùy chọn (1/2/3): ")
                 if choice == "1":
                     tt=data_py.summary.read_main("week")
                     if data_py.summary.read_main("semester")["num"] == 0 and tt["num"] >= config.semester_1:
-                        print("Max week")
+                        print("Tối đa tuần học kỳ 1")
                         continue
                     elif data_py.summary.read_main("semester")["num"] == 1 and tt["num"] == config.semester_total:
-                        print("Max week")
+                        print("Tối đa tuần học kỳ 2")
                         continue
                     elif data_py.summary.read_main("semester")["num"] == 2:
-                            print("Max semester")
+                            print("Tối đa học kỳ")
                             continue
                     t=logic.summary.week.generate_weekly_summary().values()
+                    t1=data_py.team.read_mainfile()
+                    if isinstance(t, str):
+                        print(t)
+                        continue
                     for i in t:
-                        print("Team ID:", next(iter(i)))
+                        for k in t1["idteam"]:
+                            if k["id_team"] == str(next(iter(i))):
+                                print("Tên nhóm:", k["name"])
                         for j in i.values():
-                            print("Name:", j["name"])
-                            print("Give:", j["give"])
-                            print("Error:", j["error"])
-                            print("Ratings:", j["ratings"])
-                            print("Total:", str(j["total"]))
+                            print("Tên:", j["name"])
+                            print("Điểm cổng:", j["give"])
+                            print("Điểm trừ:", j["error"])
+                            print("Đánh giá:", j["ratings"])
+                            print("Tổng điểm:", str(j["total"]))
                 elif choice == "2":
                     tt=data_py.summary.read_main("week")
                     # print(tt["num"],type(tt["num"]))
                     if data_py.summary.read_main("semester")["num"] == 0 and not tt["num"] <= config.semester_1:
-                        print("Not enough week semester 1")
+                        print("Không đủ tuần học kỳ 1")
                         continue
                     elif data_py.summary.read_main("semester")["num"] == 1 and not tt["num"] == config.semester_total:
-                        print("Not enough week semester 2")
+                        print("Không đủ tuần học kỳ 2")
                         continue
                     elif data_py.summary.read_main("semester")["num"] == 2:
-                        print("Max semester")
+                        print("Tối đa học kỳ")
                         continue
                     t=logic.summary.semester.generate_weekly_summary()
+                    t1=data_py.team.read_mainfile()
+                    if isinstance(t, str):print(t);continue
                     for i in t:
-                        print("Team ID:", i[0])
+                        for k in t1["idteam"]:
+                            if k["id_team"] == str(next(iter(i))):
+                                print("Tên nhóm:", k["name"])
                         for j in i[1]:
-                            print("Name:", j[0])
-                            print("Total:", str(j[1]))
-                            print("Ratings:", j[2])
+                            print("Tên:", j[0])
+                            print("Tổng điểm:", str(j[1]))
+                            print("Đánh giá:", j[2])
                 elif choice == "3":
                     # print(data_py.summary.read_main("semester")["num"],data_py.summary.read_main("semester")["num"]<=2)
                     if not data_py.summary.read_main("semester")["num"] <= 2:
-                        print("Not enough semester")
+                        print("Không đủ học kỳ")
                         continue
                     else:
                         t=logic.summary.year.generate_weekly_summary()
+                        t1=data_py.team.read_mainfile()
+                        if isinstance(t, str):print(t);continue
                         for i in t:
-                            print("Team ID:", i[0])
+                            for k in t1["idteam"]:
+                                if k["id_team"] == str(next(iter(i))):
+                                    print("Tên nhóm:", k["name"])
                             for j in i[1]:
-                                print("Name:", j[0])
-                                print("Total:", str(j[1]))    # Đúng thứ tự - Total 
-                                print("Ratings:", j[2])       # Đúng thứ tự - Ratings
+                                print("Tên:", j[0])
+                                print("Tổng điểm:", str(j[1]))    # Đúng thứ tự - Tổng điểm
+                                print("Đánh giá:", j[2])       # Đúng thứ tự - Đánh giá
                 else:
                     print("Invalid choice.")
         except (AttributeError, KeyError, TypeError, IndexError, IOError, OSError, ZeroDivisionError, ImportError, NameError, RuntimeError) as e:
@@ -164,42 +236,43 @@ def class_monitor(id):
             print(f"{type(e).__name__}: {e}")
 
 def teamleider(id):
-    print(f"Welcome, {data_py.find_user(id).get('name')}, Role: {data_py.find_user(id).get('role')}")
-    print("Type 'exit' to quit.")
-    print("Type 'help' for help.")
+    print(f"Chào mừng, {data_py.find_user(id).get('name')}, Vai trò: {data_py.find_user(id).get('role')}")
+    print("Nhập 'exit' để thoát phần miền.")
+    print("Nhập 'help' để trợ giúp.")
     while True:
         try:
             cmd = input("> ")
             if cmd == "exit": break
             elif cmd == "help":
                 print('''
-                    exit: Exit the program
-                    help: Show this help message
-                    list: List all students in my team
-                    add: add error or give to a student in my team
+                    exit: Thoát phần mềm
+                    help: Hiển thị thông điệp trợ giúp này
+                    list: Liệt kê tất cả học sinh trong nhóm của tôi
+                    add: Thêm lỗi hoặc cho một học sinh trong nhóm của tôi
                 ''')
             elif cmd == "list":
                 for i in data_py.team.list_teams(id):
-                    print(f" - Name: {i[0]}, ID: {i[1]}")
+                    print(f" - Tên: {i[0]}, ID: {i[1]}")
             elif cmd == "add":
-                input_type = str(input("Type (error/give): "))
-                student_name = str(input("Student name: "))
-                how = int(input("How many: "))
+                input_type = str(input("Loại (error/give): "))
+                student_name = str(input("Tên học sinh: "))
+                how = int(input("Số lượng: "))
                 while how <= 0:
-                    print("Please enter a positive number.")
-                    how = int(input("How many: "))
+                    print("Vui lòng nhập một số dương.")
+                    how = int(input("Số lượng: "))
                 student_id = data_py.find_user_name(student_name).get("id")
                 if input_type == "error":
-                    error_id = int(input("Error ID: "))
+                    error_id = int(input("Điểm trừ ID: "))
                     import logic.team.add
                     for i in range(how):
-                        logic.team.add.add_error(id, student_id, error_id)
-                        # ...
+                        t=logic.team.add.add_error(id, student_id, error_id)
+                        if isinstance(t, str):print(t);continue
                 elif input_type == "give":
-                    give_id = int(input("Give ID: "))
+                    give_id = int(input("Điểm cộng ID: "))
                     import logic.team.add
                     for i in range(how):
-                        logic.team.add.add_give(id, student_id, give_id)
+                        t=logic.team.add.add_give(id, student_id, give_id)
+                        if isinstance(t, str):print(t);continue
                         # ...
         except (AttributeError, KeyError, TypeError, IndexError, IOError, OSError, ZeroDivisionError, ImportError, NameError, RuntimeError) as e:
             print(f"{type(e).__name__}: {e}")
@@ -209,30 +282,30 @@ def teamleider(id):
             print(f"{type(e).__name__}: {e}")
 
 def student(id):
-    print(f"Welcome, {data_py.find_user(id).get('name')}, Role: {data_py.find_user(id).get('role')}")
-    print("Type 'exit' to quit.")
-    print("Type 'help' for help.")
+    print(f"Chào mừng, {data_py.find_user(id).get('name')}, Vai trò: {data_py.find_user(id).get('role')}")
+    print("Nhập 'exit' để thoát phần mềm.")
+    print("Nhập 'help' để trợ giúp.")
     while True:
         try:
             cmd = input("> ")
             if cmd == "exit": break
             elif cmd == "help":
                 print('''
-                    exit: Exit the program
-                    help: Show this help message
-                    list: list my errors and give
+                    exit: Thoát phần mềm
+                    help: Hiển thị thông điệp trợ giúp này
+                    list: Liệt kê điểm trừ và điểm cộng của tôi
                 ''')
             elif cmd == "list":
                 import logic.student.my_error_give
-                print("My errors:")
+                print("Điểm trừ của tôi:")
                 for i in logic.student.my_error_give.my_errors(id):
-                    print(f" - Name: {i['name']}, ID: {i['id']}")
+                    print(f" - Loại: {i['name']}, ID: {i['id']}")
                 print(logic.student.my_error_give.cal_errors(id))
-                print("My give:")
+                print("Điểm cộng của tôi:")
                 for i in logic.student.my_error_give.my_give(id):
-                    print(f" - Name: {i['name']}, ID: {i['id']}")
+                    print(f" - Loại: {i['name']}, ID: {i['id']}")
                 print(logic.student.my_error_give.cal_give(id))
-                print("Total:", logic.student.my_error_give.cal_total(id))
+                print("Tổng:", logic.student.my_error_give.cal_total(id))
         except (AttributeError, KeyError, TypeError, IndexError, IOError, OSError, ZeroDivisionError, ImportError, NameError, RuntimeError) as e:
             print(f"{type(e).__name__}: {e}")
         except (ValueError) as e:

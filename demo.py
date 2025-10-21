@@ -1,8 +1,8 @@
 from openpyxl import Workbook
 from openpyxl.styles import Font, PatternFill, Alignment, Border, Side
 from openpyxl.utils import get_column_letter
-import data
-data.load_users()
+import data_py
+data_py.load_users()
 
 
 def export_week(data1):
@@ -262,8 +262,8 @@ def export_year(data1):
 # Test data
 week = {
     '2': {
-        3: {'name': 'thanh', 'give': 0, 'error': 0, 'total': 100, 'ratings': 'Super good'},
-        7: {'name': 'demo3', 'give': 0, 'error': 0, 'total': 150, 'ratings': 'Super good'}  # Higher total
+        "3": {'name': 'thanh', 'give': 0, 'error': 0, 'total': 100, 'ratings': 'Super good'},
+        "7": {'name': 'demo3', 'give': 0, 'error': 0, 'total': 150, 'ratings': 'Super good'}  # Higher total
     },
     '5': {
         6: {'name': 'demo2', 'give': 0, 'error': 0, 'total': 100, 'ratings': 'Super good'},
@@ -285,8 +285,15 @@ year={
 # export_semester(semester)
 # export_year(year)
 
-import config
-t2=data.summary.read_main("week")
+# import config
+# t2=data.summary.read_main("week")
 
-for h in range(config.semester_1+1,t2["num"]+1):
-    print(h)
+# for h in range(config.semester_1+1,t2["num"]+1):
+#     print(h)
+
+# import data_py
+
+t1=data_py.summary.read_main("semester")
+t3=data_py.team.read_mainfile()
+t5=data_py.summary.read(1, "year", 1)
+    # print(t5)

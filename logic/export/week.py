@@ -3,7 +3,7 @@ from openpyxl.styles import Font, PatternFill, Alignment, Border, Side
 from openpyxl.utils import get_column_letter
 import data_py
 
-def export_week(data1):
+def __init__(data1):
     t=data_py.team.read_mainfile()
     wb = Workbook()
     # Remove default sheet

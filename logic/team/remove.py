@@ -11,9 +11,9 @@ def remove_error(teamleider_id, student_id, error_id):
                     return True
             return False
         else:
-            raise ValueError("Student is not in your team.")
+            return "Student is not in your team."
     else:
-        raise FileNotFoundError("No team found for this teamleider.")
+        return "No team found for this teamleider."
     
 def remove_give(teamleider_id, student_id, give_id):
     if data_py.team.check_team(teamleider_id):
@@ -26,6 +26,6 @@ def remove_give(teamleider_id, student_id, give_id):
                     return True
             return False
         else:
-            raise ValueError("Student is not in your team.")
+            return "Student is not in your team."
     else:
-        raise FileNotFoundError("No team found for this teamleider.")
+        return "No team found for this teamleider."

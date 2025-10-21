@@ -1,8 +1,8 @@
 import os
-import data.team
-import data.role
-import data.eg
-import data.summary
+import data_py.team
+import data_py.role
+import data_py.eg
+import data_py.summary
 
 if not os.path.exists("./data/User.json"):
     with open("./data/User.json", "w", encoding="utf-8") as f:
@@ -21,20 +21,20 @@ def find_user(id):
     for user in UserData.values():
         if user["id"] == id:
             return {"name": user["name"], "id": user["id"], "role": user["role"]}
-    raise ValueError("User not found.")
+    raise "User not found."
 
 def find_user_name(name):
     for user in UserData.values():
         if user["name"] == name:
             return {"name": user["name"], "id": user["id"], "role": user["role"]}
-    # raise ValueError("User not found.")
+    # raise "User not found."
 
 def create_user(name, password, id, role):
     import json
     UserData[id-1] = {"name": name, "password": password, "id": id, "role": role}
     with open("./data/User.json", "w", encoding="utf-8") as f:
         json.dump(UserData, f)
-    raise ValueError("User created successfully.")
+    raise "User created successfully."
 
 def delete_user(id):
     import json
@@ -42,9 +42,9 @@ def delete_user(id):
         del UserData[id-1]
         with open("./data/User.json", "w", encoding="utf-8") as f:
             json.dump(UserData, f)
-        raise ValueError("User deleted successfully.")
+        raise "User deleted successfully."
     else:
-        raise ValueError("User not found.")
+        raise "User not found."
 
 
 def find_role(role_name):

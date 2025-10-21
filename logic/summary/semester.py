@@ -12,15 +12,16 @@ def generate_weekly_summary():
             t3=[]
             t8=data_py.summary.read_main("semester")
             if t8["num"]==0:
-                print(1)
+                # print(1)
                 for h in range(t2["num"]):
                     t5=[]
                     t4=data_py.summary.read(i["id_team"],"week",h+1)
                     for j in t4.values(): t5.append([j["name"], j["total"], j["ratings"]])
                     t3.append(t5)
             elif t8["num"]==1:
-                print(2)
-                for h in range(config.semester_1+1,t2["num"]+1):
+                # print(2)
+                for h in range(config.semester_1+1,t2["num"]):
+                    # print(h)
                     t5=[]
                     t4=data_py.summary.read(i["id_team"],"week",h+1)
                     for j in t4.values(): t5.append([j["name"], j["total"], j["ratings"]])

@@ -43,7 +43,7 @@ def list_teams(id):
             if member:
                 men.append((member['name'], member['id']))
         if not men:
-            raise ValueError("No members found for this teamleider.")
+            return "No members found for this teamleider."
         return men
     else:
-        raise ValueError("No team found for this teamleider.")
+        return "No team found for this teamleider."

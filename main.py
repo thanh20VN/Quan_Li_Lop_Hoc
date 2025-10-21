@@ -1,4 +1,4 @@
-import data
+import data_py
 import logic
 import getpass
 import cli
@@ -6,7 +6,7 @@ import cli
 logined = False
 id = 0
 try:
-    data.load_users()
+    data_py.load_users()
 except (AttributeError, KeyError, TypeError, IndexError, IOError, OSError, ZeroDivisionError, ImportError, NameError, RuntimeError) as e:
     print(f"Error: {e}")
 except (ValueError) as e:
@@ -15,43 +15,47 @@ except Exception as e:
     print(f"Noting error: {e}")
 
 while not logined:
-    if data.UserData == {}:
-        print("No users found. Please register.")
+    if data_py.UserData == {}:
+        print("Không có tài khoản nào. Vui lòng đăng ký tài khoản giáo viên đầu tiên.")
         name = input("Name > ")
         password = getpass.getpass("Pass > ")
         role = "teacher"
-        id = len(data.UserData) + 1
+        id = len(data_py.UserData) + 1
         logic.reg.register(name, password, id, role)
-        print("Registration successful. Please log in.")
+        print("Đăng ký thành công. Vui lòng đăng nhập lại.")
     user = input("User > ")
-    try:
-        logic.login.login(user, getpass.getpass("Pass > "))
-    except (AttributeError, KeyError, TypeError, IndexError, IOError, OSError, ZeroDivisionError, ImportError, NameError, RuntimeError) as e:
-        print(f"Error: {e}")
-    except ValueError as e:
-        if str(e) == "Login successful.":
-            id = data.find_user_name(user).get("id")
-            logined = True
-        else:
-            print(e)
-    except Exception as e:
-        print(f"Noting error: {e}")
+    
+    t=logic.login.login(user, getpass.getpass("Pass > "))
+    if t == "Login successful.":
+        id = data_py.find_user_name(user).get("id")
+        logined = True
+        print("Đăng nhập thành công.")
+    # except (AttributeError, KeyError, TypeError, IndexError, IOError, OSError, ZeroDivisionError, ImportError, NameError, RuntimeError) as e:
+    #     print(f"Error: {e}")
+    # except ValueError as e:
+    #     if str(e) == "Đăng nhập thành công.":
+    #         id = data_py.find_user_name(user).get("id")
+    #         logined = True
+    #     else:
+    #         print(e)
+    # except Exception as e:
+    #     print(f"Noting error: {e}")
 
 choose=""
 while choose not in ["c", "u"]:
     choose=input("Choose cli or gui (c/u): ")
 
 if choose=="c": 
-    if data.find_user(id).get("role") == "teacher":
+    if data_py.find_user(id).get("role") == "teacher":
         cli.teacher(id)
 
-    elif data.find_user(id).get("role") == "class monitor":
+    elif data_py.find_user(id).get("role") == "class monitor":
         cli.class_monitor(id)
 
-    elif data.find_user(id).get("role") == "teamleider":
+    elif data_py.find_user(id).get("role") == "teamleider":
         cli.teamleider(id)
 
-    elif data.find_user(id).get("role") == "student":
+    elif data_py.find_user(id).get("role") == "student":
         cli.student(id)
 
 # if choose=="u":

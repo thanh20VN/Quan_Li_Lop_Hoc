@@ -6,7 +6,7 @@ def write(teamleider_id, teams, type):
     with open("./data/summary/{0}/main.json".format(type), "r", encoding="utf-8") as f:
         main = json.load(f)
     if type not in ["week", "semester", "year"]:
-        raise ValueError("Invalid type. Must be 'week', 'semester', or 'year'.")
+        return "Invalid type. Must be 'week', 'semester', or 'year'."
     elif type == "week":
         file_path = "./data/summary/week/Team_{0}/{1}.json".format(teamleider_id, main["num"])
     elif type == "semester":
@@ -14,7 +14,7 @@ def write(teamleider_id, teams, type):
     elif type == "year":
         # file_path = "./data/summary/year/Team_{0}/{1}.json".format(teamleider_id
         # , main["num"])
-        with open("./data/summary/year/End.json", "w", encoding="utf-8") as f:
+        with open("./data/summary/year.json", "w", encoding="utf-8") as f:
             json.dump(teams, f)
         return
     # Tạo thư mục cha nếu chưa tồn tại
@@ -25,14 +25,14 @@ def write(teamleider_id, teams, type):
 def read(teamleider_id, type, id):
     import json
     if type not in ["week", "semester", "year"]:
-        raise ValueError("Invalid type. Must be 'week', 'semester', or 'year'.")
+        return "Invalid type. Must be 'week', 'semester', or 'year'."
     elif type == "week":
         file_path = "./data/summary/week/Team_{0}/{1}.json".format(teamleider_id, id)
     elif type == "semester":
         file_path = "./data/summary/semester/Team_{0}/{1}.json".format(teamleider_id, id)
     elif type == "year":
         # file_path = "./data/summary/year/Team_{0}/{1}.json".format(teamleider_id, id)
-        file_path = "./data/summary/year/End.json"
+        file_path = "./data/summary/year.json"
     if not os.path.exists(file_path):
         raise FileNotFoundError(f"No summary found for teamleider_id {teamleider_id}, type {type}, id {id}")
     else:
@@ -57,7 +57,7 @@ def list_summaries(teamleider_id,type):
 def check(teamleider_id, type, id):
     import os
     if type not in ["week", "semester", "year"]:
-        raise ValueError("Invalid type. Must be 'week', 'semester', or 'year'.")
+        return "Invalid type. Must be 'week', 'semester', or 'year'."
     elif type == "week":
         file_path = "./data/summary/week/Team_{0}/{1}.json".format(teamleider_id, id)
     elif type == "semester":
@@ -81,12 +81,12 @@ def create(type):
 
     with open("./data/summary/{0}/main.json".format(type), "w", encoding="utf-8") as f:
         json.dump(main, f)
-    import data
-    t=data.team.read_mainfile()
+    import data_py
+    t=data_py.team.read_mainfile()
     for i in t["idteam"]: 
         teamleider_id= i["id_team"]
         if type not in ["week", "semester", "year"]:
-            raise ValueError("Invalid type. Must be 'week', 'semester', or 'year'.")
+            return "Invalid type. Must be 'week', 'semester', or 'year'."
         elif type == "week":
             file_dir = "./data/summary/week/Team_{0}/".format(teamleider_id)
             file_path = "./data/summary/week/Team_{0}/{1}.json".format(teamleider_id, id)
@@ -101,7 +101,7 @@ def create(type):
 def remove(teamleider_id, type):
     import os
     if type not in ["week", "semester"]:
-        raise ValueError("Invalid type. Must be 'week', 'semester', or 'year'.")
+        return "Invalid type. Must be 'week', 'semester', or 'year'."
     else:
         file_path = "./data/summary/{0}/Team_{1}".format(type,teamleider_id)
     if os.path.exists(file_path):

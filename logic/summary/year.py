@@ -21,7 +21,7 @@ def generate_weekly_summary():
                         r2 = rank_priority.index(t4["students"][j][2])
                         t1[-1][1].append(t3["students"][j] if r1 >= r2 else t4["students"][j])
     # print(t1)
-    for i in t["idteam"]: data_py.summary.remove(i["id_team"], "semester")
+    # for i in t["idteam"]: data_py.summary.remove(i["id_team"], "semester")
     t5={}
     for i in t["idteam"]:
         for j in t1:
