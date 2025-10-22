@@ -11,10 +11,13 @@ def __init__(data1):
 
     # Process each team in a separate sheet
     for team_id, team_data in data1.items():
+        name=""
         for i in t["idteam"]:
-            if i["id_team"] == team_id:
+            # print(i)
+            if str(i["id_team"]) == team_id:
                 name=str(i["name"])[0].upper()+str(i["name"])[1:]
         # Create new sheet for team
+        # print(name)
         ws = wb.create_sheet(name)
         
         # Styles
@@ -91,4 +94,4 @@ def __init__(data1):
             ws.column_dimensions[column_letter].width = max_length + 2
 
     wb.save('week.xlsx')
-    return 'week.xlsx'
+    return 'Đã tạo file với tên week.xlsx'

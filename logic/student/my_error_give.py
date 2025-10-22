@@ -1,4 +1,5 @@
 import data_py
+import config
 
 def give_error(id):
     teams = data_py.eg.read_egfile("e")
@@ -89,4 +90,4 @@ def cal_give(iduser):
     return t
 
 def cal_total(iduser):
-    return 100+int(cal_give(iduser))-int(cal_errors(iduser))
+    return  config.default_point+int(cal_give(iduser))-int(cal_errors(iduser))

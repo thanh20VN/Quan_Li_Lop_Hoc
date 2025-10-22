@@ -15,12 +15,12 @@ def write(teamleider_id, teams, type):
         # file_path = "./data/summary/year/Team_{0}/{1}.json".format(teamleider_id
         # , main["num"])
         with open("./data/summary/year.json", "w", encoding="utf-8") as f:
-            json.dump(teams, f)
+            json.dump(teams, f, ensure_ascii=False, indent=4)
         return
     # Tạo thư mục cha nếu chưa tồn tại
     # os.makedirs(os.path.dirname(file_path), exist_ok=True)
     with open(file_path, "w", encoding="utf-8") as f:
-        json.dump(teams, f)
+        json.dump(teams, f, ensure_ascii=False, indent=4)
 
 def read(teamleider_id, type, id):
     import json

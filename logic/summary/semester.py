@@ -43,16 +43,16 @@ def generate_weekly_summary():
                         if t7[-1][1][l][0] == student_name:
                             break
                     else:
-                        t7[-1][1].append([student_name, 0, [[0, "Not achieved"], [0, "Achieved"], [0, "Medium"], [0, "Rather"], [0, "Good"], [0, "Very good"], [0, "Super good"]]])
+                        t7[-1][1].append([student_name, 0, [[0, config.not_achieved], [0, config.achieved], [0, config.medium], [0, config.rather], [0, config.good], [0, config.very_good], [0, config.super_good]]])
                         l = len(t7[-1][1]) - 1
                     t7[-1][1][l][1] += student_total
-                    if rating == "Not achieved": t7[-1][1][l][2][0][0] += 1
-                    elif rating == "Achieved": t7[-1][1][l][2][1][0] += 1
-                    elif rating == "Medium": t7[-1][1][l][2][2][0] += 1
-                    elif rating == "Rather": t7[-1][1][l][2][3][0] += 1
-                    elif rating == "Good": t7[-1][1][l][2][4][0] += 1
-                    elif rating == "Very good": t7[-1][1][l][2][5][0] += 1
-                    elif rating == "Super good": t7[-1][1][l][2][6][0] += 1
+                    if rating == config.not_achieved: t7[-1][1][l][2][0][0] += 1
+                    elif rating == config.achieved: t7[-1][1][l][2][1][0] += 1
+                    elif rating == config.medium: t7[-1][1][l][2][2][0] += 1
+                    elif rating == config.rather: t7[-1][1][l][2][3][0] += 1
+                    elif rating == config.good: t7[-1][1][l][2][4][0] += 1
+                    elif rating == config.very_good: t7[-1][1][l][2][5][0] += 1
+                    elif rating == config.super_good: t7[-1][1][l][2][6][0] += 1
     for i in range(len(t7)):
         for j in range(len(t7[i][1])):
             t7[i][1][j][2].sort(reverse=True)

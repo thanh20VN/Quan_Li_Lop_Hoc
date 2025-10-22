@@ -5,12 +5,12 @@ def check_team(teamleider_id):
 def write_teamfile(teamleider_id, teams):
     import json
     with open("./data/team/Team_{0}.json".format(teamleider_id), "w", encoding="utf-8") as f:
-        json.dump(teams, f)
+        json.dump(teams, f, ensure_ascii=False, indent=4)
 
 def write_mainfile(teams):
     import json
     with open("./data/team/main.json", "w", encoding="utf-8") as f:
-        return json.dump(teams, f)
+        return json.dump(teams, f, ensure_ascii=False, indent=4)
 
 def read_teamfile(teamleider_id):
     import json

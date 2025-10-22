@@ -1,6 +1,5 @@
 import os
 from . import team
-from . import role
 from . import eg
 from . import summary
 
@@ -33,7 +32,7 @@ def create_user(name, password, id, role):
     import json
     UserData[id-1] = {"name": name, "password": password, "id": id, "role": role}
     with open("./data/User.json", "w", encoding="utf-8") as f:
-        json.dump(UserData, f)
+        json.dump(UserData, f, ensure_ascii=False, indent=4)
     return "Tạo tài khoản thành công."
 
 def delete_user(id):
@@ -41,7 +40,7 @@ def delete_user(id):
     if id-1 in UserData:
         del UserData[id-1]
         with open("./data/User.json", "w", encoding="utf-8") as f:
-            json.dump(UserData, f)
+            json.dump(UserData, f, ensure_ascii=False, indent=4)
         raise "Xoá tài khoản thành công."
     else:
         raise "Không có tài khoản này."

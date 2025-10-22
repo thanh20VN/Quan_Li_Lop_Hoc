@@ -13,7 +13,7 @@ def __init__(data1):
     for team_id, students in data1.items():
         # Lấy tên team
         for i in t["idteam"]:
-            if i["id_team"] == team_id:
+            if str(i["id_team"]) == team_id:
                 name = str(i["name"])[0].upper() + str(i["name"])[1:]
         # print(students)
         # Tạo sheet mới
@@ -57,7 +57,7 @@ def __init__(data1):
         # Ghi dữ liệu học sinh
         for row_idx, (student, rank) in enumerate(zip(sorted_students, ranks), start=2):
             name, score, rating = student
-            ws.cell(row=row_idx, column=1, value=data.find_user_name(name)["id"])
+            ws.cell(row=row_idx, column=1, value=data_py.find_user_name(name)["id"])
             ws.cell(row=row_idx, column=2, value=name)
             ws.cell(row=row_idx, column=3, value=score)
             ws.cell(row=row_idx, column=4, value=rating)
@@ -82,4 +82,4 @@ def __init__(data1):
             ws.column_dimensions[column_letter].width = max_length + 2
 
     wb.save('semester.xlsx')
-    return 'semester.xlsx'
+    return 'Đã tạo file với tên semester.xlsx'

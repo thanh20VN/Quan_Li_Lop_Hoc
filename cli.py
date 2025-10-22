@@ -32,16 +32,15 @@ def teacher(id):
                 id = len(data_py.UserData)
                 print('''
                     Vai trò có thể là: 
-                      1. Giáo viên
-                      2. Lớp trưởng
-                      3. Tổ trưởng
-                      4. Học sinh
                 ''')
+                for i, role1 in enumerate(config.roles, 1):
+                    print(f"                       {i}. {role1}")
                 roid = input("Vai trò : ")
-                if roid == "1": role = "teacher"
-                if roid == "2": role = "class monitor"
-                if roid == "3": role = "teamleider"
-                if roid == "4": role = "student"
+                for i, role1 in enumerate(config.roles, 1):
+                    # print(f"                       {i}. {role1}")
+                    if str(roid) == str(i):
+                        role = role1
+                # print(role)
                 if role == "teamleider":
                     team = input("Tên nhóm: ")
                     import logic.team
@@ -63,6 +62,7 @@ def teacher(id):
                 team_name = str(input("Tên nhóm: "))
                 user_name = str(input("Tên người dùng: "))
                 user_id = data_py.find_user_name(user_name).get("id")
+                import logic.team
                 team_id = data_py.team.find_team(team_name)
                 t=logic.team.remove_member(team_id, user_id)
                 if isinstance(t, str):print(t)
@@ -119,14 +119,85 @@ def teacher(id):
                         print("Chưa đủ học kỳ để xuất báo cáo năm.")
                 else:
                     print("Lựa chọn không hợp lệ.")
+            elif cmd == "summary":
+                import logic.summary
+                print('''
+                    Những loại tổng kết:
+                    1. Tổng kết hàng tuần
+                    2. Tổng kết học kỳ
+                    3. Tổng kết hàng năm
+                ''')
+                choice = input("Chọn một tùy chọn (1/2/3): ")
+                if choice == "1":
+                    tt=data_py.summary.read_main("week")
+                    if data_py.summary.read_main("semester")["num"] == 0 and tt["num"] >= config.semester_1:
+                        print("Tối đa tuần học kỳ 1")
+                        continue
+                    elif data_py.summary.read_main("semester")["num"] == 1 and tt["num"] == config.semester_total:
+                        print("Tối đa tuần học kỳ 2")
+                        continue
+                    elif data_py.summary.read_main("semester")["num"] == 2:
+                            print("Tối đa học kỳ")
+                            continue
+                    t=logic.summary.week.generate_weekly_summary().values()
+                    t1=data_py.team.read_mainfile()
+                    if isinstance(t, str):
+                        print(t)
+                        continue
+                    for i in t:
+                        for k in t1["idteam"]:
+                            if k["id_team"] == str(next(iter(i))):
+                                print("Tên nhóm:", k["name"])
+                        for j in i.values():
+                            print("Tên:", j["name"])
+                            print("Điểm cổng:", j["give"])
+                            print("Điểm trừ:", j["error"])
+                            print("Đánh giá:", j["ratings"])
+                            print("Tổng điểm:", str(j["total"]))
+                elif choice == "2":
+                    tt=data_py.summary.read_main("week")
+                    # print(tt["num"],type(tt["num"]))
+                    if data_py.summary.read_main("semester")["num"] == 0 and not tt["num"] <= config.semester_1:
+                        print("Không đủ tuần học kỳ 1")
+                        continue
+                    elif data_py.summary.read_main("semester")["num"] == 1 and not tt["num"] == config.semester_total:
+                        print("Không đủ tuần học kỳ 2")
+                        continue
+                    elif data_py.summary.read_main("semester")["num"] == 2:
+                        print("Tối đa học kỳ")
+                        continue
+                    t=logic.summary.semester.generate_weekly_summary()
+                    t1=data_py.team.read_mainfile()
+                    if isinstance(t, str):print(t);continue
+                    for i in t:
+                        for k in t1["idteam"]:
+                            if k["id_team"] == str(next(iter(i))):
+                                print("Tên nhóm:", k["name"])
+                        for j in i[1]:
+                            print("Tên:", j[0])
+                            print("Tổng điểm:", str(j[1]))
+                            print("Đánh giá:", j[2])
+                elif choice == "3":
+                    # print(data_py.summary.read_main("semester")["num"],data_py.summary.read_main("semester")["num"]<=2)
+                    if not data_py.summary.read_main("semester")["num"] <= 2:
+                        print("Không đủ học kỳ")
+                        continue
+                    else:
+                        t=logic.summary.year.generate_weekly_summary()
+                        t1=data_py.team.read_mainfile()
+                        if isinstance(t, str):print(t);continue
+                        for i in t:
+                            for k in t1["idteam"]:
+                                if k["id_team"] == str(next(iter(i))):
+                                    print("Tên nhóm:", k["name"])
+                            for j in i[1]:
+                                print("Tên:", j[0])
+                                print("Tổng điểm:", str(j[1]))    # Đúng thứ tự - Tổng điểm
+                                print("Đánh giá:", j[2])       # Đúng thứ tự - Đánh giá
                 # ...
-        except (AttributeError, KeyError, TypeError, IndexError, IOError, OSError, ZeroDivisionError, ImportError, NameError, RuntimeError) as e:
+        except (AttributeError, KeyError, TypeError, IndexError, ValueError, IOError, OSError, ZeroDivisionError, ImportError, NameError, RuntimeError) as e:
             import traceback
             traceback.print_exc()
-        except (ValueError) as e:
-            print(e)
-        except Exception as e:
-            print(f"{type(e).__name__}: {e}")
 
 def class_monitor(id):
     print(f"Chào mừng, {data_py.find_user(id).get('name')}, Vai trò: {data_py.find_user(id).get('role')}")
@@ -145,9 +216,16 @@ def class_monitor(id):
                     summary: Tổng kết mọi thứ
                 ''')
             elif cmd == "list":
-                import logic.student
-                for i in logic.student.list_students():
-                    print(f" - Tên: {i[0]}, ID: {i[1]}")
+                import logic.student.my_error_give
+                print("Điểm trừ của tôi:")
+                for i in logic.student.my_error_give.my_errors(id):
+                    print(f" - Loại: {i['name']}, ID: {i['id']}")
+                print("Điểm trừ của tôi:", logic.student.my_error_give.cal_errors(id))
+                print("Điểm cộng của tôi:")
+                for i in logic.student.my_error_give.my_give(id):
+                    print(f" - Loại: {i['name']}, ID: {i['id']}")
+                print("Điểm cộng của tôi:", logic.student.my_error_give.cal_give(id))
+                print("Tổng:", logic.student.my_error_give.cal_total(id))
             elif cmd == "remove":
                 input_type = str(input("Type (error/give): "))
                 student_name = str(input("Student name: "))
@@ -241,13 +319,9 @@ def class_monitor(id):
                                 print("Đánh giá:", j[2])       # Đúng thứ tự - Đánh giá
                 else:
                     print("Invalid choice.")
-        except (AttributeError, KeyError, TypeError, IndexError, IOError, OSError, ZeroDivisionError, ImportError, NameError, RuntimeError) as e:
+        except (AttributeError, KeyError, TypeError, IndexError, ValueError, IOError, OSError, ZeroDivisionError, ImportError, NameError, RuntimeError) as e:
             import traceback
             traceback.print_exc()
-        except (ValueError) as e:
-            print(e)
-        except Exception as e:
-            print(f"{type(e).__name__}: {e}")
 
 def teamleider(id):
     print(f"Chào mừng, {data_py.find_user(id).get('name')}, Vai trò: {data_py.find_user(id).get('role')}")
@@ -290,12 +364,9 @@ def teamleider(id):
                         t=logic.team.add.add_give(id, student_id, give_id)
                         if isinstance(t, str):print(t);continue
                         # ...
-        except (AttributeError, KeyError, TypeError, IndexError, IOError, OSError, ZeroDivisionError, ImportError, NameError, RuntimeError) as e:
-            print(f"{type(e).__name__}: {e}")
-        except (ValueError) as e:
-            print(e)
-        except Exception as e:
-            print(f"{type(e).__name__}: {e}")
+        except (AttributeError, KeyError, TypeError, IndexError, ValueError, IOError, OSError, ZeroDivisionError, ImportError, NameError, RuntimeError) as e:
+            import traceback
+            traceback.print_exc()
 
 def student(id):
     print(f"Chào mừng, {data_py.find_user(id).get('name')}, Vai trò: {data_py.find_user(id).get('role')}")
@@ -322,9 +393,6 @@ def student(id):
                     print(f" - Loại: {i['name']}, ID: {i['id']}")
                 print("Điểm cộng của tôi:", logic.student.my_error_give.cal_give(id))
                 print("Tổng:", logic.student.my_error_give.cal_total(id))
-        except (AttributeError, KeyError, TypeError, IndexError, IOError, OSError, ZeroDivisionError, ImportError, NameError, RuntimeError) as e:
-            print(f"{type(e).__name__}: {e}")
-        except (ValueError) as e:
-            print(e)
-        except Exception as e:
-            print(f"{type(e).__name__}: {e}")
+        except (AttributeError, KeyError, TypeError, IndexError, ValueError, IOError, OSError, ZeroDivisionError, ImportError, NameError, RuntimeError) as e:
+            import traceback
+            traceback.print_exc()

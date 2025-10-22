@@ -1,9 +1,9 @@
-import data_py.role as data1
+import config as data1
 import data_py
 import hashlib
 
 def register(name, password, id, role):
-    if role not in data1.__init__:
+    if role not in data1.roles:
         return "Invalid role"
     for user in data_py.UserData.values():
         if user["id"] == id:

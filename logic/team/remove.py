@@ -11,9 +11,9 @@ def remove_error(teamleider_id, student_id, error_id):
                     return True
             return False
         else:
-            return "Student is not in your team."
+            return "Thành viên không có trong nhóm của bạn."
     else:
-        return "No team found for this teamleider."
+        return "Không tìm thấy nhóm cho người quản lý này."
     
 def remove_give(teamleider_id, student_id, give_id):
     if data_py.team.check_team(teamleider_id):
@@ -26,6 +26,6 @@ def remove_give(teamleider_id, student_id, give_id):
                     return True
             return False
         else:
-            return "Student is not in your team."
+            return "Thành viên không có trong nhóm của bạn."
     else:
-        return "No team found for this teamleider."
+        return "Không tìm thấy nhóm cho người quản lý này."

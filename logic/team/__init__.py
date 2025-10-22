@@ -28,13 +28,16 @@ def remove_member(teamleider_id, user_id):
     if data_py.team.check_team(teamleider_id):
         teams = data_py.team.read_teamfile(teamleider_id)
         if user_id in teams["members"]:
+            id = teams["members"].index(user_id)
+            teams["errors"].pop(id)
+            teams["give"].pop(id)
             teams["members"].remove(user_id)
             data_py.team.write_teamfile(teamleider_id, teams)
-            return "Successfully remove menber"
+            return "Xoá thành viên thành công"
         else:
-            return "Menber in team"
+            return "Thành viên không có trong nhóm."
     else:
-        return "Not found out team"
+        return "Không tìm thấy nhóm cho người quản lý này."
 
 def team(name, teamleider_id):
     if data_py.team.check_team(teamleider_id):
