@@ -5,14 +5,14 @@ import cli
 import flet as ft
 import gui
 
-logined = False
-id = 0
-data_py.load_users(),data_py.UserData
+logined = True
+id = 4
+data_py.load_users()
 
 
 choose = "u"  # Set default to GUI mode
 
-if not data_py.UserData == {}:
+if not data_py.UserData == {} and logined == False:
     def Login(page: ft.Page):
         page.title = "Đăng nhập"
         page.vertical_alignment = ft.MainAxisAlignment.CENTER
@@ -21,6 +21,8 @@ if not data_py.UserData == {}:
         page.window.height = 400
         # page.window.full_screen=True
         page.window.resizable = False
+        page.window.maximizable=False
+        page.window.center()
 
         user_field = ft.TextField(label="Tên", width=300, text_align=ft.TextAlign.LEFT)
         pass1 = ft.TextField(label="Mật khẩu", width=300, password=True, text_align=ft.TextAlign.LEFT)
@@ -88,7 +90,7 @@ if not data_py.UserData == {}:
         )
         page.update()
     ft.app(target=Login)
-else:
+elif logined == False:
     def Register(page: ft.Page):
         page.title = "Đăng ký"
         page.vertical_alignment = ft.MainAxisAlignment.CENTER
@@ -97,6 +99,8 @@ else:
         page.window.height = 400
         # page.window.full_screen=True
         page.window.resizable = False
+        page.window.maximizable=False
+        page.window.center()
 
         user_field = ft.TextField(label="Tên", width=300, text_align=ft.TextAlign.LEFT)
         pass1 = ft.TextField(label="Mật khẩu", width=300, password=True, text_align=ft.TextAlign.LEFT)
@@ -165,28 +169,31 @@ else:
         page.update()
     ft.app(target=Register)
 # id=2
-print(choose)
+# print(choose)
+
+import config
+
 if choose=="c": 
-    if data_py.find_user(id).get("role") == "teacher":
+    if data_py.find_user(id).get("role") == config.roles[0]:
         cli.teacher(id)
 
-    elif data_py.find_user(id).get("role") == "class monitor":
+    elif data_py.find_user(id).get("role") == config.roles[1]:
         cli.class_monitor(id)
 
-    elif data_py.find_user(id).get("role") == "teamleider":
+    elif data_py.find_user(id).get("role") == config.roles[2]:
         cli.teamleider(id)
 
-    elif data_py.find_user(id).get("role") == "student":
+    elif data_py.find_user(id).get("role") == config.roles[3]:
         cli.student(id)
 if choose=="u":
-    if data_py.find_user(id).get("role") == "teacher":
+    if data_py.find_user(id).get("role") == config.roles[0]:
         gui.teacher.__init__(id)
 
-    elif data_py.find_user(id).get("role") == "class monitor":
+    elif data_py.find_user(id).get("role") == config.roles[1]:
         gui.class_monitor.__init__(id)
 
-    elif data_py.find_user(id).get("role") == "teamleider":
+    elif data_py.find_user(id).get("role") == config.roles[2]:
         gui.teamleider.__init__(id)
 
-    elif data_py.find_user(id).get("role") == "student":
+    elif data_py.find_user(id).get("role") == config.roles[3]:
         gui.student.__init__(id)

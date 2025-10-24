@@ -41,7 +41,7 @@ def teacher(id):
                     if str(roid) == str(i):
                         role = role1
                 # print(role)
-                if role == "teamleider":
+                if role == config.roles[-2]:
                     team = input("Tên nhóm: ")
                     import logic.team
                     logic.team.create_team(team,id)

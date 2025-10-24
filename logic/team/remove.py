@@ -4,9 +4,11 @@ def remove_error(teamleider_id, student_id, error_id):
     if data_py.team.check_team(teamleider_id):
         teams = data_py.team.read_teamfile(teamleider_id)
         if student_id in teams["members"]:
-            for error in teams["errors"]:
-                if error[0] == error_id and error[1] == student_id:
-                    teams["errors"].remove(error)
+            t1=teams["members"].index(student_id)
+            t2=teams["errors"][t1]
+            for i in range(0,len(t2)):
+                if str(i) == str(error_id):
+                    teams["errors"][t1].pop(i)
                     data_py.team.write_teamfile(teamleider_id, teams)
                     return True
             return False

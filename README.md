@@ -1,4 +1,3 @@
-# Quan_Li_Lop_Hoc
+# rpQuan_Li_Lop_Hoc
 
-This is a GUI in my project
-
+Đây là

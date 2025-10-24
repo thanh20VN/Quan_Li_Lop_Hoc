@@ -2,26 +2,28 @@ import flet as ft
 import data_py
 import logic
 
-id1=3
+id1=0
 column=["ID","Lỗi vi phạm","Điểm trừ / cộng","Số lần"]
 
 def list1(type):
     a=[]
     b=[[],[]]
     if type=="error":
-        t=logic.student.my_error_give.my_errors(id1)
+        tm=logic.student.my_error_give.my_errors(id1)
     elif type=="give":
-        t=logic.student.my_error_give.my_give(id1)
-    for i in t:a.append(i["id"])
-    for i in a:
-        if i not in b[0]: b[0].append(i); b[1].append(a.count(i))
-    c=[]
-    for i in b[0]:
-        for j in t:
-            if c==[] and i==j["id"]:
-                c.append({"id":i,"name":j["name"],"point":j["point"], "count":b[1][b[0].index(i)]})
-            elif j["id"] != c[-1]["id"] and i==j["id"]:
-                c.append({"id":i,"name":j["name"],"point":j["point"], "count":b[1][b[0].index(i)]})
+        tm=logic.student.my_error_give.my_give(id1)
+    if tm != ["None found"]:
+        for i in tm:a.append(i["id"])
+        for i in a:
+            if i not in b[0]: b[0].append(i); b[1].append(a.count(i))
+        c=[]
+        for i in b[0]:
+            for j in tm:
+                if c==[] and i==j["id"]:
+                    c.append({"id":i,"name":j["name"],"point":j["point"], "count":b[1][b[0].index(i)]})
+                elif j["id"] != c[-1]["id"] and i==j["id"]:
+                    c.append({"id":i,"name":j["name"],"point":j["point"], "count":b[1][b[0].index(i)]})
+    else:c=[]
     return c
 
 def gui(page: ft.Page):
@@ -60,6 +62,8 @@ def gui(page: ft.Page):
     page.window.height = 770
     # page.window.full_screen=True
     page.window.resizable = False
+    page.window.maximizable=False
+    page.window.center()
 
     page.add(
         ft.Row(

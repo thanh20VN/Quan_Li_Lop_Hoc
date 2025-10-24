@@ -34,7 +34,7 @@ def read(teamleider_id, type, id):
         # file_path = "./data/summary/year/Team_{0}/{1}.json".format(teamleider_id, id)
         file_path = "./data/summary/year.json"
     if not os.path.exists(file_path):
-        raise FileNotFoundError(f"No summary found for teamleider_id {teamleider_id}, type {type}, id {id}")
+        return FileNotFoundError(f"No summary found for teamleider_id {teamleider_id}, type {type}, id {id}")
     else:
         with open(file_path, "r", encoding="utf-8") as f:
             teams = json.load(f)
