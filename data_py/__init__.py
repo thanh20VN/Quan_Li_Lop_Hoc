@@ -20,7 +20,7 @@ def find_user(id):
     for user in UserData.values():
         if user["id"] == id:
             return {"name": user["name"], "id": user["id"], "role": user["role"]}
-    raise "Không có tài khoản này."
+    return "Không có tài khoản này."
 
 def find_user_name(name):
     for user in UserData.values():

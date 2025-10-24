@@ -84,7 +84,10 @@ def gui(page: ft.Page):
                             rows=row1
                         ),
                         ft.Text("Tổng điểm: -"+str(logic.student.my_error_give.cal_errors(id1)), size=20),
-                    ]
+                    ],
+                    scroll=ft.ScrollMode.ALWAYS,
+                    height=600,
+                    width=500
                 ),
                 ft.Column(
                     controls=[
@@ -100,7 +103,10 @@ def gui(page: ft.Page):
                             rows=row2
                         ),
                         ft.Text("Tổng điểm: +" + str(logic.student.my_error_give.cal_give(id1)), size=20),
-                    ]
+                    ],
+                    scroll=ft.ScrollMode.ALWAYS,
+                    height=600,
+                    width=500
                 )
             ],
             alignment=ft.MainAxisAlignment.SPACE_BETWEEN,
