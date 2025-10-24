@@ -1,1 +1,20 @@
-{}
+{
+    "0": {
+        "name": "Loan",
+        "password": "202cb962ac59075b964b07152d234b70",
+        "id": 1,
+        "role": "teacher"
+    },
+    "1": {
+        "name": "Vy",
+        "password": "202cb962ac59075b964b07152d234b70",
+        "id": 2,
+        "role": "teamleider"
+    },
+    "2": {
+        "name": "Thanh",
+        "password": "202cb962ac59075b964b07152d234b70",
+        "id": 3,
+        "role": "student"
+    }
+}

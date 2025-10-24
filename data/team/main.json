@@ -1,3 +1,8 @@
 {
-    "idteam": []
+    "idteam": [
+        {
+            "name": "Tổ 1",
+            "id_team": 2
+        }
+    ]
 }
