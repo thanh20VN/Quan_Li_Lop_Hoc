@@ -1,0 +1,19 @@
+Login {cm:2025-09-19}
+Register {cm:2025-09-19}
+Student {cm:2025-09-19}
+Summary {cm:2025-10-21}
+Gui
+Gui home
+Gui Login / Register
+gui teacher
+gui student
+gui class monitor
+gui teamleider
+team {cm:2025-09-19}
+team fix {cm:2025-09-19}
+Error / give {cm:2025-09-19}
+summary week {cm:2025-09-19}
+summary year {cm:2025-09-29}
+summary semester {cm:2025-09-25}
+fix student {cm:2025-09-29}
+excel_file {cm:2025-10-21}
