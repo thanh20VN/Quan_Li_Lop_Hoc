@@ -15,18 +15,21 @@ def load_users():
         global UserData
         UserData = json.load(f)
     return "Tải thông tin thành công."
-
+# y=0
 def find_user(id):
+    # global y
+    # y+=1
     for user in UserData.values():
+        # print(user,y)
         if user["id"] == id:
             return {"name": user["name"], "id": user["id"], "role": user["role"]}
-    raise "Không có tài khoản này."
+    return "Không có tài khoản này."
 
 def find_user_name(name):
     for user in UserData.values():
         if user["name"] == name:
             return {"name": user["name"], "id": user["id"], "role": user["role"]}
-    # raise "Không có tài này."
+    return "Không có tài này."
 
 def create_user(name, password, id, role):
     import json
@@ -41,9 +44,9 @@ def delete_user(id):
         del UserData[id-1]
         with open("./data/User.json", "w", encoding="utf-8") as f:
             json.dump(UserData, f, ensure_ascii=False, indent=4)
-        raise "Xoá tài khoản thành công."
+        return "Xoá tài khoản thành công."
     else:
-        raise "Không có tài khoản này."
+        return "Không có tài khoản này."
 
 
 def find_role(role_name):
