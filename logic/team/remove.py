@@ -7,7 +7,8 @@ def remove_error(teamleider_id, student_id, error_id):
             t1=teams["members"].index(student_id)
             t2=teams["errors"][t1]
             for i in range(0,len(t2)):
-                if str(i) == str(error_id):
+                # print(i,t2[i],error_id)
+                if str(t2[i]) == str(error_id):
                     teams["errors"][t1].pop(i)
                     data_py.team.write_teamfile(teamleider_id, teams)
                     return True

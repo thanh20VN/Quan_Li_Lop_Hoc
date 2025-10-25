@@ -123,7 +123,8 @@ def gui(page: ft.Page):
         ),
     )
 
-def __init__(id):
+def __init__(page1,id):
     global id1
     id1=id
-    ft.app(target=gui)
+    # ft.app(target=gui)
+    gui(page1)

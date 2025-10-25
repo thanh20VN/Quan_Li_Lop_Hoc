@@ -1,3 +1,4 @@
+from gui.function import *
 import flet as ft
 import data_py
 import logic
@@ -12,83 +13,11 @@ for i in data_py.UserData.values():
     # print(i)
     if i['role'] != config.roles[0]:
         t3.append(i['id'])
-def list1(type):
-    a=[]
-    b=[[],[]]
-    if type=="error":
-        tm=logic.student.my_error_give.my_errors(id1)
-    elif type=="give":
-        tm=logic.student.my_error_give.my_give(id1)
-    if tm != ["None found"]:
-        for i in tm:a.append(i["id"])
-        for i in a:
-            if i not in b[0]: b[0].append(i); b[1].append(a.count(i))
-        c=[]
-        for i in b[0]:
-            for j in tm:
-                if c==[] and i==j["id"]:
-                    c.append({"id":i,"name":j["name"],"point":j["point"], "count":b[1][b[0].index(i)]})
-                elif j["id"] != c[-1]["id"] and i==j["id"]:
-                    c.append({"id":i,"name":j["name"],"point":j["point"], "count":b[1][b[0].index(i)]})
-    else:c=[]
-    return c
 
-def check_single_true(checkboxes): 
-    if isinstance(checkboxes[0], list):
-        flat_list = [item for sublist in checkboxes for item in sublist]
-        return sum(1 for cb in flat_list if cb.value) == 1
-    return sum(1 for cb in checkboxes if cb.value) == 1
-
-def list2(type,id2):
-    a=[]
-    b=[[],[]]
-    if type=="error":
-        tm=logic.student.my_error_give.my_errors(id2)
-    elif type=="give":
-        tm=logic.student.my_error_give.my_give(id2)
-    if tm != ["None found"]:
-        for i in tm:a.append(i["id"])
-        for i in a:
-            if i not in b[0]: b[0].append(i); b[1].append(a.count(i))
-        c=[]
-        for i in b[0]:
-            for j in tm:
-                if c==[] and i==j["id"]:
-                    c.append({"id":i,"name":j["name"],"point":j["point"], "count":b[1][b[0].index(i)]})
-                elif j["id"] != c[-1]["id"] and i==j["id"]:
-                    c.append({"id":i,"name":j["name"],"point":j["point"], "count":b[1][b[0].index(i)]})
-    else:c=[]
-    return c
-
-def get_number_from_label(label):
-    # Tách chuỗi và lấy phần đầu tiên
-    try:
-        number = int(label.split('.')[0].strip())
-        return number
-    except:
-        return 0
-
-def find_selected_numbers(checkboxes):
-    # Làm phẳng list nếu cần
-    flat_checkboxes = []
-    for item in checkboxes:
-        if isinstance(item, list):
-            flat_checkboxes.extend(item)
-        else:
-            flat_checkboxes.append(item)
-    
-    # Tìm và chuyển đổi số từ các label được chọn
-    numbers = []
-    for checkbox in flat_checkboxes:
-        if checkbox.value:
-            num = get_number_from_label(checkbox.label)
-            numbers.append(num)
-    
-    return numbers
-
+t23=''
 def gui(page: ft.Page):
-    t1=list1("error")
-    t2=list1("give")
+    t1=list1("error",id1)
+    t2=list1("give",id1)
     row1=[]
     for i in t1:
         row1.append(
@@ -114,7 +43,7 @@ def gui(page: ft.Page):
                 ]
             )
         )
-
+    
     row3=[]
     for i in t3:
         t8=data_py.find_user(i)
@@ -123,7 +52,7 @@ def gui(page: ft.Page):
         )
 
     page.title = "Lớp trưởng"
-    page.vertical_alignment = ft.MainAxisAlignment.START
+    page.vertical_alignment = ft.MainAxisAlignment.CENTER
     page.theme_mode = ft.ThemeMode.LIGHT
     page.window.width = 1100
     page.window.height = 770
@@ -190,7 +119,7 @@ def gui(page: ft.Page):
                     ft.Row(
                         controls=[
                             ft.Button(text="Tổng kết", width=100, on_click=lambda e: page.go("/summary")),
-                            ft.Button(text="Xoá lỗi / điểm cộng", width=100, on_click=lambda e: page.go("/remove")),
+                            ft.Button(text="Xoá lỗi", width=100, on_click=lambda e: page.go("/remove")),
                             ft.Button(text="Thoát", width=100, on_click=lambda e: page.window.destroy())
                         ],
                         alignment=ft.MainAxisAlignment.END
@@ -218,7 +147,13 @@ def gui(page: ft.Page):
                 # print(text1['textField'])
                 for i in range(int(text1.value)):
                     t=logic.team.remove.remove_error(idt, t13[-1], t15[-1])
-                    print(t)
+                    # print(t)
+                    if t:
+                        row4.clear()
+                        # row3.clear()
+                        for checkbox in row3:
+                            checkbox.value=False
+                        page.go("/")
 
             text1 = ft.TextField(label="Mấy lần", width=300, height=100, text_align=ft.TextAlign.LEFT)
             buton = ft.Button(text="Xác nhận", width=100, height=50, on_click=click1, disabled=False)
@@ -242,7 +177,7 @@ def gui(page: ft.Page):
                             ft.Checkbox(label=str(i["id"]) + "." + i["name"] + ", Số lần: " + str(i["count"]), value=False)
                         )
                     if not row4:  # Nếu không có lỗi nào
-                        row4.append(ft.Text(value="Không có lỗi nào / Điểm cộng"))
+                        row4.append(ft.Text(value="Không có lỗi nào"))
                     else:
                         t9.visible = True
                     t7.controls = row4
@@ -279,12 +214,156 @@ def gui(page: ft.Page):
                 )
             )
         if page.route == "/summary":
+            t15=ft.Checkbox(label="Tuần")
+            t16=ft.Checkbox(label="Học kỳ")
+            t17=ft.Checkbox(label="Năm học")
+            t18 = ft.Column(
+                controls=[
+                    t15,
+                    t16,
+                    t17
+                ]
+            )
+            row5=[]
+            t21=ft.Column(
+                controls=row5,
+                visible=True
+            )
+            # print(t21.controls)
+            t25=ft.Column(
+                controls=[],
+                scroll=ft.ScrollMode.ALWAYS,
+                width=700,
+                height=650
+            )
+            def click(e):
+                if t23=="Tuần":
+                    t24=logic.summary.week.generate_weekly_summary().values()
+                    t26=data_py.team.read_mainfile()
+                    for i in t24:
+                        for k in t26["idteam"]:
+                            # print(str(next(iter(i))),k['id_team'],str(k["id_team"]) == str(next(iter(i))))
+                            if str(k["id_team"]) == str(next(iter(i))):
+                                t25.controls.append(ft.Text(f"Tên nhóm: {k["name"]}", size=18))
+                    #             print("Tên nhóm:", k["name"])
+                        for j in i.values():
+                            t25.controls.append(ft.Text(
+                                f"Tên: {j['name']}, điểm cộng: {j['give']}, điểm trừ: {j["error"]}, đánh giá: {j["ratings"]}, Tổng điểm: {str(j["total"])}",
+                                size=18
+                            ))
+                    t22.disabled=True
+                    page.update()
+
+                elif t23=="Học kỳ":
+                    t24=logic.summary.semester.generate_weekly_summary()
+                    t26=data_py.team.read_mainfile()
+                    for i in t24:
+                        for k in t26["idteam"]:
+                            # print(str(next(iter(i))),k['id_team'],str(k["id_team"]) == str(next(iter(i))))
+                            if str(k["id_team"]) == str(next(iter(i))):
+                                t25.controls.append(ft.Text(f"Tên nhóm: {k["name"]}", size=18))
+                    #             print("Tên nhóm:", k["name"])
+                        for j in i[1]:
+                            t25.controls.append(ft.Text(
+                                f"Tên: {j[0]}, đánh giá: {j[1]}, Tổng điểm: {j[2]}",
+                                size=18
+                            ))
+                    t22.disabled=True
+                    page.update()
+                elif t23=="Năm học":
+                    t24=logic.summary.year.generate_weekly_summary()
+                    t26=data_py.team.read_mainfile()
+                    for i in t24:
+                        for k in t26["idteam"]:
+                            # print(str(next(iter(i))),k['id_team'],str(k["id_team"]) == str(next(iter(i))))
+                            if str(k["id_team"]) == str(next(iter(i))):
+                                t25.controls.append(ft.Text(f"Tên nhóm: {k["name"]}", size=18))
+                    #             print("Tên nhóm:", k["name"])
+                        for j in i[1]:
+                            t25.controls.append(ft.Text(
+                                f"Tên: {j[0]}, đánh giá: {j[1]}, Tổng điểm: {j[2]}",
+                                size=18
+                            ))
+                    t22.disabled=True
+                    page.update()
+            t22=ft.OutlinedButton(text="Xác nhận", width=130, height=40, on_click=click, disabled=False)
+            def check3(e):
+                global t23
+                is_valid = check_single_true([t15,t16,t17])
+                if is_valid:
+                    t19=find_selected_text([t15,t16,t17])
+                    tt=data_py.summary.read_main("week")
+                    if t19[-1]=="Tuần":
+                        t23='Tuần'
+                        row5.clear()
+                        if data_py.summary.read_main("semester")["num"] == 0 and tt["num"] >= config.semester_1:
+                            row5.append(ft.Text("Tối đa tuần học kỳ 1", size=20))
+                            t21.controls=row5
+                            page.update()
+                        elif data_py.summary.read_main("semester")["num"] == 1 and tt["num"] == config.semester_total:
+                            row5.append(ft.Text("Tối đa tuần học kỳ 2", size=20))
+                            t21.controls=row5
+                            page.update()
+                        elif data_py.summary.read_main("semester")["num"] == 2:
+                            row5.append(ft.Text("Tối đa học kỳ", size=20))
+                            t21.controls=row5
+                            page.update()
+                        else:
+                            t21.visible= True
+                            row5.append(t22)
+                            t21.controls=row5
+                            page.update()
+                    elif t19[-1]=="Học kỳ":
+                        t23='Học kỳ'
+                        row5.clear()
+                        if data_py.summary.read_main("semester")["num"] == 0 and not tt["num"] <= config.semester_1:
+                            row5.append(ft.Text("Tối đa tuần học kỳ 1", size=20))
+                            t21.controls=row5
+                            page.update()
+                        elif data_py.summary.read_main("semester")["num"] == 1 and not tt["num"] == config.semester_total:
+                            row5.append(ft.Text("Tối đa tuần học kỳ 2", size=20))
+                            t21.controls=row5
+                            page.update()
+                        elif data_py.summary.read_main("semester")["num"] == 2:
+                            row5.append(ft.Text("Tối đa học kỳ", size=20))
+                            t21.controls=row5
+                            page.update()
+                        else:
+                            t21.visible= True
+                            row5.append(t22)
+                            t21.controls=row5
+                            page.update()
+                    elif t19[-1]=="Năm học":
+                        t23='Năm học'
+                        row5.clear()
+                        if not data_py.summary.read_main("semester")["num"] <= 2:
+                            row5.append(ft.Text("Không đử học kỳ", size=20))
+                            t21.controls=row5
+                        else:
+                            t21.visible= True
+                            row5.append(t22)
+                            t21.controls=row5
+                            page.update()
+                else:
+                    row5.clear()
+                    t21.controls=row5
+                    page.update()
+
+
+            for i in [t15,t16,t17]:
+                i.on_change=check3
+
             page.views.append(
                 ft.View(
                     "/summary",
                     [
                         ft.AppBar(title=ft.Text("Tổng kết"), bgcolor=ft.Colors.SURFACE_CONTAINER_HIGHEST),
-                        ft.Text(value="Hello, World!")
+                        ft.Row(
+                            controls=[
+                                t18,t21,t25
+                            ]
+                            # expand=True,
+                        )
                     ]
                 )
             )
@@ -302,7 +381,7 @@ def gui(page: ft.Page):
     page.on_route_change = route_change
     page.on_view_pop = view_pop
     page.go(page.route)
-def __init__(id):
+def __init__(page1,id):
     global id1
     id1=id
-    ft.app(target=gui)
+    gui(page1)

@@ -82,4 +82,4 @@ def __init__(data1):
             ws.column_dimensions[column_letter].width = max_length + 2
 
     wb.save('semester.xlsx')
-    return 'Đã tạo file với tên semester.xlsx'
+    return 'semester.xlsx'

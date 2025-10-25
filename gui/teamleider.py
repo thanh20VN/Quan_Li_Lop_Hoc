@@ -45,7 +45,7 @@ def list1(type):
     if type=="error":
         tm=logic.student.my_error_give.my_errors(id1)
     elif type=="give":
-        tm,=logic.student.my_error_give.my_give(id1)
+        tm=logic.student.my_error_give.my_give(id1)
     if tm != ["None found"]:
         for i in tm:a.append(i["id"])
         for i in a:
@@ -101,8 +101,8 @@ def gui(page: ft.Page):
         tt=up2()
         global t1, t2
         for i in tt:
-            if t1==[]:t1=i
-            else:t2=i
+            if t1==[]:t2=i
+            else:t1=i
         # print(t1,t2)
     up3()
     def up1():
@@ -391,8 +391,8 @@ def gui(page: ft.Page):
 
     # print(row4[0:2],row3)
     
-def __init__(id):
+def __init__(page1,id):
     global id1
     id1=id
-    ft.app(target=gui)
+    gui(page1)
 
