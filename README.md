@@ -1,3 +1,3 @@
-# rpQuan_Li_Lop_Hoc
+# Quan_Li_Lop_Hoc
 
-Đây là
+Nếu có lỗi vui lòng liên hệ : ``` truongminhthanh0106+github+help@gmail.com ```
