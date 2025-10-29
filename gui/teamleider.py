@@ -94,15 +94,17 @@ def gui(page: ft.Page):
     def up2():
         global t1
         global t2
-        t2=[]
-        t1=[]
+        t2.clear()
+        t1.clear()
         return [list1("give"),list1("error")]
     def up3():
         tt=up2()
         global t1, t2
-        for i in tt:
-            if t1==[]:t2=i
-            else:t1=i
+        t1=tt[0]
+        t2=tt[1]
+        #for i in tt:
+        #    if t1==[]:t2=i
+        #    else:t1=i
         # print(t1,t2)
     up3()
     def up1():
