@@ -155,7 +155,7 @@ elif logined == False:
         def on_login_click(e):
             username = user_field.value 
             password = pass1.value
-            t = logic.reg.register(username, password, len(data_py.UserData)+1, "teacher")
+            t = logic.reg.register(username, password, len(data_py.UserData)+1, config.roles[0])
             if t == "Tạo tài khoản thành công.":
                 global id
                 id = data_py.find_user_name(username).get("id")
