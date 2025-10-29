@@ -2,10 +2,10 @@
     "semester_1":18,
     "semester_2":17,
     "roles" : [
-        "teacher",
-        "class monitor",
-        "teamleider",
-        "student"
+        "Giáo viên",
+        "Lớp trưởng",
+        "Tổ trưởng",
+        "Học sinh"
     ],
     "default_point":100,
     "Not achieved": "Chưa đạt",

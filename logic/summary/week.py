@@ -13,7 +13,7 @@ def generate_weekly_summary():
             for j in t1["members"]:
                 t3=data_py.find_user(j)
                 tot=logic.student.my_error_give.cal_total(t3["id"])
-                if t3["role"]=="student" or t3["role"]=="teamleider" or t3["role"]=="class monitor":
+                if t3["role"]==config.roles[3] or t3["role"]==config.roles[2] or t3["role"]==config.roles[1]:
                     if tot<=10: rat=config.not_achieved
                     elif tot>=11 and tot<=20: rat=config.achieved
                     elif tot>=21 and tot<=30: rat=config.medium

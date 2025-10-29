@@ -41,7 +41,7 @@ def teacher(id):
                     if str(roid) == str(i):
                         role = role1
                 # print(role)
-                if role == "teamleider":
+                if role == config.roles[-2]:
                     team = input("Tên nhóm: ")
                     import logic.team
                     logic.team.create_team(team,id)
@@ -111,7 +111,7 @@ def teacher(id):
                 elif choice == "3":
                     t1=data_py.summary.read_main("semester")
                     if  t1["num"] == 2:
-                        t3=data_py.team.read_mainfile()
+                        # t3=data_py.team.read_mainfile()
                         t5=data_py.summary.read(1, "year", 1)
                         t=logic.export.year.__init__(t5)
                         if isinstance(t, str):print(t)
