@@ -234,6 +234,7 @@ def gui(page: ft.Page):
                 t8=data_py.team.read_mainfile()
                 for i in t7:
                     for k in t8["idteam"]:
+                        #print(i,t7)
                         if str(k["id_team"]) == str(next(iter(i))):
                             t4.controls.append(ft.Text(f"Tên nhóm: {k["name"]}", size=18))
                     for j in i.values():
@@ -454,7 +455,7 @@ def gui(page: ft.Page):
             for i in row3:
                 i.on_change=check
             def click(e):
-                t9.value="Đã xuất ra file mang tên "+logic.export.semester.__init__(t6)
+                t9.value="Đã xuất ra file mang tên  "+logic.export.semester.__init__(t6)
                 page.update()
             t9=ft.Text(value="",size=20)
             t10=ft.OutlinedButton(text="Xác nhận", width=130, height=40, on_click=click, disabled=True)
@@ -489,7 +490,7 @@ def gui(page: ft.Page):
                 ft.View(
                     "/export/year",
                     [
-                        ft.AppBar(title=ft.Text("Xuất ra file excel - Nắm học"), bgcolor=ft.Colors.SURFACE_CONTAINER_HIGHEST),
+                        ft.AppBar(title=ft.Text("Xuất ra file excel - Năm học"), bgcolor=ft.Colors.SURFACE_CONTAINER_HIGHEST),
                         ft.Row([
                                 t10,
                                 t9
