@@ -1,11 +1,17 @@
+from .supabase_client import supabase
+
 def read_egfile(t):
     if t == "g":
-        import json
-        with open("./data/give.json", "r", encoding="utf-8") as f:
-            teams = json.load(f)
-        return teams
+        response = (
+            supabase.table("give")
+            .select("*")
+            .execute()
+        )
+        return response.data
     if t == "e":
-        import json
-        with open("./data/errors.json", "r", encoding="utf-8") as f:
-            teams = json.load(f)
-        return teams
+        response = (
+            supabase.table("error")
+            .select("*")
+            .execute()
+        )
+        return response.data

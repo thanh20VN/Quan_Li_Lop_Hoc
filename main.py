@@ -1,232 +1,99 @@
-import data_py
-import logic
-import getpass
-import cli
 import flet as ft
-import gui
-import subprocess
-import sys
-
-logined = False
-id = 0
-data_py.load_users()
-
-
-choose = "u"  # Set default to GUI mode
-
+import data_py
 import config
 
-# def h():
-#     if choose == "c":
-#         # CLI mode thì gọi trực tiếp
-#         role = data_py.find_user(id).get("role")
-#         if role == config.roles[0]:
-#             cli.teacher(id)
-#         elif role == config.roles[1]:
-#             cli.class_monitor(id)
-#         elif role == config.roles[2]:
-#             cli.teamleider(id)
-#         elif role == config.roles[3]:
-#             cli.student(id)
 
-#     elif choose == "u":
-#         # GUI mode thì mở app mới (để Flet chạy trong main thread riêng)
-#         role = data_py.find_user(id).get("role")
-#         if role == config.roles[0]:
-#             subprocess.Popen([sys.executable, "-m", "gui.teacher", str(id)])
-#         elif role == config.roles[1]:
-#             subprocess.Popen([sys.executable, "-m", "gui.class_monitor", str(id)])
-#         elif role == config.roles[2]:
-#             subprocess.Popen([sys.executable, "-m", "gui.teamleider", str(id)])
-#         elif role == config.roles[3]:
-#             subprocess.Popen([sys.executable, "-m", "gui.student", str(id)])
+def main(page: ft.Page):
+    page.title = "Quản lý lớp học"
+    page.vertical_alignment = ft.MainAxisAlignment.CENTER
+    page.theme_mode = ft.ThemeMode.LIGHT
+    page.window.width = 1100
+    page.window.height = 770
+    page.window.resizable = True
+    page.window.maximizable = True
+    page.window.center()
+    page.user_id = None
 
-if not data_py.UserData == {} and logined == False:
-    def Login(page: ft.Page):
-        page.title = "Đăng nhập"
-        page.vertical_alignment = ft.MainAxisAlignment.CENTER
-        page.theme_mode = ft.ThemeMode.LIGHT
-        page.window.width = 400
-        page.window.height = 400
-        # page.window.full_screen=True
-        page.window.resizable = False
-        page.window.maximizable=False
-        page.window.center()
+    def route_change(e):
+        page.views.clear()
+        target = e.route if hasattr(e, 'route') else str(e)
 
-        user_field = ft.TextField(label="Tên", width=300, text_align=ft.TextAlign.LEFT)
-        pass1 = ft.TextField(label="Mật khẩu", width=300, password=True, text_align=ft.TextAlign.LEFT)
-        button = ft.ElevatedButton(text="Đăng nhập", width=100, disabled=True)
-        error_text = ft.Text(value="", color="red")
-        # cli= ft.Checkbox(label="Cửa sổ dòng lệnh", value=False)
-        # gui= ft.Checkbox(label="Chế độ GUI", value=True)
+        if target == "/" or target == "":
+            page.user_id = None
+            from gui.auth import build_login_view
+            page.views.append(build_login_view(page))
 
-        def on_login_click(e):
-            username = user_field.value 
-            password = pass1.value
-            t = logic.login.login(username, password)
-            if t == "Login successful.":
-                global id
-                id = data_py.find_user_name(username).get("id")
-                page.clean()  # xoá toàn bộ control cũ
-                role = data_py.find_user(id).get("role")
+        elif target == "/register":
+            from gui.auth import build_register_view
+            page.views.append(build_register_view(page))
 
-                if role == config.roles[0]:
-                    import gui.teacher as teacher
-                    teacher.__init__(page,id)
-                elif role == config.roles[1]:
-                    import gui.class_monitor as cm
-                    cm.__init__(page,id)
-                elif role == config.roles[2]:
-                    import gui.teamleider as tl
-                    tl.__init__(page,id)
-                elif role == config.roles[3]:
-                    import gui.student as st
-                    st.__init__(page,id)
-            else:
-                error_text.value = t
-                page.update()
+        elif target == "/logout":
+            page.user_id = None
+            from gui.auth import build_login_view
+            page.views.append(build_login_view(page))
 
-        def check(e): 
-            if all([user_field.value, pass1.value]):
-                button.disabled = False
-            else:
-                button.disabled = True
-            page.update()
+        elif target == "/teacher":
+            import gui.teacher as teacher_module
+            teacher_module.set_user(page.user_id)
+            page.views.append(teacher_module.build_home(page))
 
-        # def on_cli_change(e):
-        #     global choose
-        #     if e.control == cli and cli.value:
-        #         gui.value = False
-        #         choose = "c"
-        #     elif e.control == gui and gui.value:
-        #         cli.value = False
-        #         choose = "u"
-        #     page.update()
+        elif target.startswith("/teacher/"):
+            import gui.teacher as teacher_module
+            teacher_module.set_user(page.user_id)
+            sub = target[len("/teacher/"):]
+            page.views.append(teacher_module.build_home(page))
+            sub_view = teacher_module.build_subroute(page, sub)
+            if sub_view:
+                page.views.append(sub_view)
 
-        user_field.on_change = check
-        pass1.on_change = check
-        button.on_click = on_login_click
-        # cli.on_change = on_cli_change
-        # gui.on_change = on_cli_change
+        elif target == "/classmonitor":
+            import gui.class_monitor as cm_module
+            cm_module.set_user(page.user_id)
+            page.views.append(cm_module.build_home(page))
 
-        page.add(
-            ft.Row(
-                controls=[
-                    ft.Column(
-                        [
-                            ft.Text("Vui lòng đăng nhập", size=20),
-                            user_field,
-                            pass1,
-                            button,
-                            # ft.Row(
-                            #     controls=[
-                            #         cli,
-                            #         gui
-                            #     ]
-                            # ),
-                            error_text
-                        ]
-                    )
-                ],
-                alignment=ft.MainAxisAlignment.CENTER,
-            )
-        )
+        elif target.startswith("/classmonitor/"):
+            import gui.class_monitor as cm_module
+            cm_module.set_user(page.user_id)
+            sub = target[len("/classmonitor/"):]
+            page.views.append(cm_module.build_home(page))
+            sub_view = cm_module.build_subroute(page, sub)
+            if sub_view:
+                page.views.append(sub_view)
+
+        elif target == "/teamleider":
+            import gui.teamleider as tl_module
+            tl_module.set_user(page.user_id)
+            page.views.append(tl_module.build_home(page))
+
+        elif target.startswith("/teamleider/"):
+            import gui.teamleider as tl_module
+            tl_module.set_user(page.user_id)
+            sub = target[len("/teamleider/"):]
+            page.views.append(tl_module.build_home(page))
+            sub_view = tl_module.build_subroute(page, sub)
+            if sub_view:
+                page.views.append(sub_view)
+
+        elif target == "/student":
+            import gui.student as st_module
+            st_module.set_user(page.user_id)
+            page.views.append(st_module.build_home(page))
+
         page.update()
-    ft.app(target=Login)
-elif logined == False:
-    def Register(page: ft.Page):
-        page.title = "Đăng ký"
-        page.vertical_alignment = ft.MainAxisAlignment.CENTER
-        page.theme_mode = ft.ThemeMode.LIGHT
-        page.window.width = 400
-        page.window.height = 400
-        # page.window.full_screen=True
-        page.window.resizable = False
-        page.window.maximizable=False
-        page.window.center()
 
-        user_field = ft.TextField(label="Tên", width=300, text_align=ft.TextAlign.LEFT)
-        pass1 = ft.TextField(label="Mật khẩu", width=300, password=True, text_align=ft.TextAlign.LEFT)
-        button = ft.ElevatedButton(text="Đăng Ký", width=100, disabled=True)
-        error_text = ft.Text(value="", color="red")
-        # cli= ft.Checkbox(label="Cửa sổ dòng lệnh", value=False)
-        # gui= ft.Checkbox(label="Chế độ GUI", value=True)
+    def view_pop(view):
+        if page.views:
+            page.views.pop()
+        if page.views:
+            top_view = page.views[-1]
+            page.go(top_view.route)
+        else:
+            page.go("/")
 
-        def on_login_click(e):
-            username = user_field.value 
-            password = pass1.value
-            t = logic.reg.register(username, password, len(data_py.UserData)+1, config.roles[0])
-            if t == "Tạo tài khoản thành công.":
-                global id
-                id = data_py.find_user_name(username).get("id")
-                page.clean()  # xoá toàn bộ control cũ
-                role = data_py.find_user(id).get("role")
-
-                if role == config.roles[0]:
-                    import gui.teacher as teacher
-                    teacher.__init__(page,id)
-                elif role == config.roles[1]:
-                    import gui.class_monitor as cm
-                    cm.__init__(page,id)
-                elif role == config.roles[2]:
-                    import gui.teamleider as tl
-                    tl.__init__(page,id)
-                elif role == config.roles[3]:
-                    import gui.student as st
-                    st.__init__(page,id)
-            else:
-                error_text.value = t
-                page.update()
-
-        def check(e): 
-            if all([user_field.value, pass1.value]):
-                button.disabled = False
-            else:
-                button.disabled = True
-            page.update()
-
-        # def on_cli_change(e):
-        #     global choose
-        #     if e.control == cli and cli.value:
-        #         gui.value = False
-        #         choose = "c"
-        #     elif e.control == gui and gui.value:
-        #         cli.value = False
-        #         choose = "u"
-            # page.update()
-
-        user_field.on_change = check
-        pass1.on_change = check
-        button.on_click = on_login_click
-        # cli.on_change = on_cli_change
-        # gui.on_change = on_cli_change
-
-        page.add(
-            ft.Row(
-                controls=[
-                    ft.Column(
-                        [
-                            ft.Text("Vui lòng đăng ký tài khoản \ngiáo viên đầu tiên.", size=20),
-                            user_field,
-                            pass1,
-                            button,
-                            # ft.Row(
-                            #     controls=[
-                            #         cli,
-                            #         gui
-                            #     ]
-                            # ),
-                            error_text
-                        ]
-                    )
-                ],
-                alignment=ft.MainAxisAlignment.CENTER,
-            )
-        )
-        page.update()
-    ft.app(target=Register)
-# id=2
-# print(choose)
+    page.on_route_change = route_change
+    page.on_view_pop = view_pop
+    page.go(page.route or "/")
 
 
-# h()
+if __name__ == "__main__":
+    ft.app(target=main)

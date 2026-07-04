@@ -1,14 +1,45 @@
 import data_py
 import logic
 import config
+import base64
 
-def list1(type,id1):
+
+def excel_to_download_link(excel_bytes):
+    b64 = base64.b64encode(excel_bytes).decode()
+    return f"data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,{b64}"
+
+
+def get_layout(page):
+    w = page.width or 1100
+    if w < 600:
+        return "mobile"
+    elif w < 1024:
+        return "tablet"
+    return "desktop"
+
+
+def responsive_width(page, desktop=500, tablet=400, mobile=None):
+    if mobile is None:
+        mobile = (page.width or 400) - 40
+    layout = get_layout(page)
+    if layout == "mobile":
+        return mobile
+    elif layout == "tablet":
+        return tablet
+    return desktop
+
+
+def responsive_columns(page):
+    return get_layout(page) != "mobile"
+
+
+def list1(type,id1, idclass):
     a=[]
     b=[[],[]]
     if type=="error":
-        tm=logic.student.my_error_give.my_errors(id1)
+        tm=logic.student.my_error_give.my_errors(id1,idclass)
     elif type=="give":
-        tm=logic.student.my_error_give.my_give(id1)
+        tm=logic.student.my_error_give.my_give(id1,idclass)
     if tm != ["None found"]:
         for i in tm:a.append(i["id"])
         for i in a:
@@ -29,13 +60,13 @@ def check_single_true(checkboxes):
         return sum(1 for cb in flat_list if cb.value) == 1
     return sum(1 for cb in checkboxes if cb.value) == 1
 
-def list2(type,id2):
+def list2(type,id2, idclass):
     a=[]
     b=[[],[]]
     if type=="error":
-        tm=logic.student.my_error_give.my_errors(id2)
+        tm=logic.student.my_error_give.my_errors(id2, idclass)
     elif type=="give":
-        tm=logic.student.my_error_give.my_give(id2)
+        tm=logic.student.my_error_give.my_give(id2, idclass)
     if tm != ["None found"]:
         for i in tm:a.append(i["id"])
         for i in a:

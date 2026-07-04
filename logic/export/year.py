@@ -1,24 +1,30 @@
 from openpyxl import Workbook
 from openpyxl.styles import Font, PatternFill, Alignment, Border, Side
 from openpyxl.utils import get_column_letter
+import io
 import data_py
 
-def __init__(data1):
-    t = data_py.team.read_mainfile()
 
+def export_year(data1, id_class):
+    t = data_py.team.read_mainfile(id_class)
     wb = Workbook()
     wb.remove(wb.active)
-    # Xử lý từng team
-    for team_id, students in data1.items():
-        # Lấy tên team
-        for i in t["idteam"]:
-            if str(i["id_team"]) == team_id:
-                name = str(i["name"])[0].upper() + str(i["name"])[1:]
 
-        # Tạo sheet mới
+    for team_id, students_data in data1.items():
+        name = ""
+        for i in t["idteam"]:
+            if str(i["id_team"]) == str(team_id):
+                name = str(i["name"])[0].upper() + str(i["name"])[1:]
+        if not name:
+            name = f"Team_{team_id}"
+
         ws = wb.create_sheet(name)
-        students=students["students"]
-        # Style cơ bản
+
+        if isinstance(students_data, dict):
+            students = students_data.get("students", [])
+        else:
+            students = students_data
+
         header_font = Font(bold=True)
         header_fill = PatternFill(fill_type='solid', start_color='CCE5FF')
         center_align = Alignment(horizontal='center')
@@ -29,13 +35,13 @@ def __init__(data1):
             bottom=Side(style='thin')
         )
 
-        # Header
         headers = ['STT', 'Họ và tên', 'Tổng điểm', 'Xếp loại', 'Hạng']
 
-        # Sắp xếp học sinh theo điểm giảm dần
-        sorted_students = sorted(students, key=lambda s: s[1], reverse=True)
+        if students:
+            sorted_students = sorted(students, key=lambda s: s[1], reverse=True)
+        else:
+            sorted_students = []
 
-        # Gán hạng (có xử lý đồng hạng)
         ranks = []
         prev_score = None
         rank = 0
@@ -45,7 +51,6 @@ def __init__(data1):
             ranks.append(rank)
             prev_score = s[1]
 
-        # Ghi header
         for col, header in enumerate(headers, 1):
             cell = ws.cell(row=1, column=col, value=header)
             cell.font = header_font
@@ -53,11 +58,12 @@ def __init__(data1):
             cell.alignment = center_align
             cell.border = border
 
-        # Ghi dữ liệu học sinh
         for row_idx, (student, rank) in enumerate(zip(sorted_students, ranks), start=2):
-            name, score, rating = student
-            ws.cell(row=row_idx, column=1, value=data_py.find_user_name(name)["id"])
-            ws.cell(row=row_idx, column=2, value=name)
+            name_str, score, rating = student
+            user = data_py.find_user_name(name_str)
+            user_id = user["id"] if isinstance(user, dict) else 0
+            ws.cell(row=row_idx, column=1, value=user_id)
+            ws.cell(row=row_idx, column=2, value=name_str)
             ws.cell(row=row_idx, column=3, value=score)
             ws.cell(row=row_idx, column=4, value=rating)
             ws.cell(row=row_idx, column=5, value=rank)
@@ -67,7 +73,6 @@ def __init__(data1):
                 cell.alignment = center_align
                 cell.border = border
 
-        # Auto chỉnh độ rộng cột
         for col in range(1, 6):
             column_letter = get_column_letter(col)
             max_length = 0
@@ -80,5 +85,7 @@ def __init__(data1):
                         pass
             ws.column_dimensions[column_letter].width = max_length + 2
 
-    wb.save('year.xlsx')
-    return 'year.xlsx'
+    buf = io.BytesIO()
+    wb.save(buf)
+    buf.seek(0)
+    return buf.getvalue()

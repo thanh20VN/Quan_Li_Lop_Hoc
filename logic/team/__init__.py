@@ -2,13 +2,19 @@ import data_py
 import logic.team.add
 import logic.team.remove
 
-def create_team(name, teamleider_id):
-    teams = {"name": name, "teamleider_id": teamleider_id+1, "members": [teamleider_id+1], "errors": [[]], "give": [[]]}
-    data_py.team.write_teamfile(teamleider_id+1, teams)
-    m=data_py.team.read_mainfile()
-    m["idteam"].append({"name":name,"id_team":teamleider_id+1})
-    data_py.team.write_mainfile(m)
+
+def create_team(name, teamleider_id, id_class):
+    teams = {
+        "name": name,
+        "teamleider_id": teamleider_id,
+        "members": [teamleider_id],
+        "errors": [],
+        "give": [],
+        "id_class": id_class
+    }
+    data_py.team.write_teamfile(teamleider_id, teams)
     return "Tạo team thành công."
+
 
 def add_member(teamleider_id, user_id):
     if data_py.team.check_team(teamleider_id):
@@ -24,13 +30,14 @@ def add_member(teamleider_id, user_id):
     else:
         return "Không tìm thấy team"
 
+
 def remove_member(teamleider_id, user_id):
     if data_py.team.check_team(teamleider_id):
         teams = data_py.team.read_teamfile(teamleider_id)
         if user_id in teams["members"]:
-            id = teams["members"].index(user_id)
-            teams["errors"].pop(id)
-            teams["give"].pop(id)
+            id_index = teams["members"].index(user_id)
+            teams["errors"].pop(id_index)
+            teams["give"].pop(id_index)
             teams["members"].remove(user_id)
             data_py.team.write_teamfile(teamleider_id, teams)
             return "Xoá thành viên thành công"
@@ -38,6 +45,7 @@ def remove_member(teamleider_id, user_id):
             return "Thành viên không có trong nhóm."
     else:
         return "Không tìm thấy nhóm cho người quản lý này."
+
 
 def team(name, teamleider_id):
     if data_py.team.check_team(teamleider_id):
