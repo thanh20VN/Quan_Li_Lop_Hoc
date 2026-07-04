@@ -1,6 +1,6 @@
 from gui.function import *
 import flet as ft
-import data_py
+import data
 import logic
 import config
 
@@ -12,12 +12,12 @@ user=None
 def set_user(uid):
     global id1, idclass
     id1 = uid
-    user = data_py.find_user(id1)
+    user = data.find_user(id1)
     idclass = user.get('class_id', None) if isinstance(user, dict) else None
 
 
 def _load_data():
-    user_data = data_py.UserData()
+    user_data = data.UserData()
     t3 = []
     for i in user_data.values():
         if i['role'] != config.roles[0]:
@@ -45,7 +45,7 @@ def _make_user_checkboxes():
     t3 = _load_data()
     row3 = []
     for i in t3:
-        t8 = data_py.find_user(i)
+        t8 = data.find_user(i)
         if isinstance(t8, dict):
             row3.append(ft.Checkbox(label=str(t8["id"]) + " ." + t8["name"], value=False))
     return row3
@@ -110,7 +110,7 @@ def build_home(page):
     else:
         tables = ft.Row(controls=[error_col, give_col], alignment=ft.MainAxisAlignment.SPACE_BETWEEN)
 
-    # user = data_py.find_user(id1)
+    # user = data.find_user(id1)
     user_name = user.get('name', '') if isinstance(user, dict) else ''
 
     return ft.View(
@@ -155,7 +155,7 @@ def _build_summary(page):
     def click(e):
         if t23['value'] == "Tuần":
             t24 = logic.summary.week.generate_weekly_summary(idclass).values()
-            t26 = data_py.team.read_mainfile(idclass)
+            t26 = data.team.read_mainfile(idclass)
             for i in t24:
                 for k in t26["idteam"]:
                     if str(k["id_team"]) == str(next(iter(i))):
@@ -169,7 +169,7 @@ def _build_summary(page):
             page.update()
         elif t23['value'] == "Học kỳ":
             t24 = logic.summary.semester.generate_weekly_summary(idclass)
-            t26 = data_py.team.read_mainfile(idclass)
+            t26 = data.team.read_mainfile(idclass)
             for i in t24:
                 for k in t26["idteam"]:
                     if str(k["id_team"]) == str(next(iter(i))):
@@ -183,7 +183,7 @@ def _build_summary(page):
             page.update()
         elif t23['value'] == "Năm học":
             t24 = logic.summary.year.generate_weekly_summary(idclass)
-            t26 = data_py.team.read_mainfile(idclass)
+            t26 = data.team.read_mainfile(idclass)
             for i in t24:
                 for k in t26["idteam"]:
                     if str(k["id_team"]) == str(next(iter(i))):
@@ -202,15 +202,15 @@ def _build_summary(page):
         is_valid = check_single_true([t15, t16, t17])
         if is_valid:
             t19 = find_selected_text([t15, t16, t17])
-            tt = data_py.summary.read_main("week")
+            tt = data.summary.read_main("week")
             if t19[-1] == "Tuần":
                 t23['value'] = 'Tuần'
                 row5.clear()
-                if data_py.summary.read_main("semester")["num"] == 0 and tt["num"] >= config.semester_1:
+                if data.summary.read_main("semester")["num"] == 0 and tt["num"] >= config.semester_1:
                     row5.append(ft.Text("Tối đa tuần học kỳ 1", size=20))
-                elif data_py.summary.read_main("semester")["num"] == 1 and tt["num"] == config.semester_total:
+                elif data.summary.read_main("semester")["num"] == 1 and tt["num"] == config.semester_total:
                     row5.append(ft.Text("Tối đa tuần học kỳ 2", size=20))
-                elif data_py.summary.read_main("semester")["num"] == 2:
+                elif data.summary.read_main("semester")["num"] == 2:
                     row5.append(ft.Text("Tối đa học kỳ", size=20))
                 else:
                     row5.append(t22)
@@ -219,11 +219,11 @@ def _build_summary(page):
             elif t19[-1] == "Học kỳ":
                 t23['value'] = 'Học kỳ'
                 row5.clear()
-                if data_py.summary.read_main("semester")["num"] == 0 and not tt["num"] <= config.semester_1:
+                if data.summary.read_main("semester")["num"] == 0 and not tt["num"] <= config.semester_1:
                     row5.append(ft.Text("Tối đa tuần học kỳ 1", size=20))
-                elif data_py.summary.read_main("semester")["num"] == 1 and not tt["num"] == config.semester_total:
+                elif data.summary.read_main("semester")["num"] == 1 and not tt["num"] == config.semester_total:
                     row5.append(ft.Text("Tối đa tuần học kỳ 2", size=20))
-                elif data_py.summary.read_main("semester")["num"] == 2:
+                elif data.summary.read_main("semester")["num"] == 2:
                     row5.append(ft.Text("Tối đa học kỳ", size=20))
                 else:
                     row5.append(t22)
@@ -232,7 +232,7 @@ def _build_summary(page):
             elif t19[-1] == "Năm học":
                 t23['value'] = 'Năm học'
                 row5.clear()
-                if not data_py.summary.read_main("semester")["num"] <= 2:
+                if not data.summary.read_main("semester")["num"] <= 2:
                     row5.append(ft.Text("Không đủ học kỳ", size=20))
                 else:
                     row5.append(t22)
@@ -262,11 +262,11 @@ def _build_remove(page):
 
     def click1(e):
         t13 = find_selected_numbers(row3)
-        t14 = data_py.team.read_mainfile(idclass)['idteam']
+        t14 = data.team.read_mainfile(idclass)['idteam']
         t15_local = find_selected_numbers(row4)
         idt = 0
         for i in t14:
-            team = data_py.team.read_teamfile(i['id_team'])
+            team = data.team.read_teamfile(i['id_team'])
             if team and t13[-1] in team['members']:
                 idt = team['teamleider_id']
         for i in range(int(text1.value)):

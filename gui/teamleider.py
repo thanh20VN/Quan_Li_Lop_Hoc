@@ -1,5 +1,5 @@
 import flet as ft
-import data_py
+import data
 import logic
 from gui.function import get_layout
 
@@ -11,7 +11,7 @@ idclass=None
 def set_user(uid):
     global id1, idclass
     id1 = uid
-    user = data_py.find_user(id1)
+    user = data.find_user(id1)
     idclass = user.get('class_id', None) if isinstance(user, dict) else None
 
 
@@ -110,10 +110,10 @@ def build_home(page):
 
     row4 = []
     try:
-        team = data_py.team.read_teamfile(id1)
+        team = data.team.read_teamfile(id1)
         if team and team.get("members"):
             for i in team["members"]:
-                t8 = data_py.find_user(i)
+                t8 = data.find_user(i)
                 if isinstance(t8, dict):
                     row4.append(ft.Checkbox(label=str(t8["id"]) + " ." + t8["name"], value=False))
     except Exception:
@@ -168,7 +168,7 @@ def build_home(page):
     else:
         tables = ft.Row(controls=[error_col, give_col], alignment=ft.MainAxisAlignment.SPACE_BETWEEN)
 
-    # user = data_py.find_user(id1)
+    # user = data.find_user(id1)
     # print(user)
     user_name = user.get('name', '') if isinstance(user, dict) else ''
 
@@ -202,7 +202,7 @@ def build_subroute(page, sub):
 
 def _build_error(page):
     row3 = []
-    errors = data_py.eg.read_egfile("e")
+    errors = data.eg.read_egfile("e")
     if errors and "errors" in errors:
         for i in errors["errors"]:
             row3.append(ft.Checkbox(label=str(i["id"]) + " ." + i["name"], value=False))
@@ -211,10 +211,10 @@ def _build_error(page):
             row3.append(ft.Checkbox(label=str(i["id"]) + " ." + i["name"], value=False))
 
     row4 = []
-    team = data_py.team.read_teamfile(id1)
+    team = data.team.read_teamfile(id1)
     if team and team.get("members"):
         for i in team["members"]:
-            t8 = data_py.find_user(i)
+            t8 = data.find_user(i)
             if isinstance(t8, dict):
                 row4.append(ft.Checkbox(label=str(t8["id"]) + " ." + t8["name"], value=False))
 
@@ -272,7 +272,7 @@ def _build_error(page):
 
 def _build_give(page):
     row3 = []
-    gives = data_py.eg.read_egfile("g")
+    gives = data.eg.read_egfile("g")
     if gives and "give" in gives:
         for i in gives["give"]:
             row3.append(ft.Checkbox(label=str(i["id"]) + " ." + i["name"], value=False))
@@ -281,10 +281,10 @@ def _build_give(page):
             row3.append(ft.Checkbox(label=str(i["id"]) + " ." + i["name"], value=False))
 
     row4 = []
-    team = data_py.team.read_teamfile(id1)
+    team = data.team.read_teamfile(id1)
     if team and team.get("members"):
         for i in team["members"]:
-            t8 = data_py.find_user(i)
+            t8 = data.find_user(i)
             if isinstance(t8, dict):
                 row4.append(ft.Checkbox(label=str(t8["id"]) + " ." + t8["name"], value=False))
 

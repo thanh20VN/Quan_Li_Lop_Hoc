@@ -1,17 +1,17 @@
-import data_py
+import data
 import logic
 import config
 import json
 
 
 def generate_weekly_summary(id_class):
-    t = data_py.team.read_mainfile(id_class)
+    t = data.team.read_mainfile(id_class)
     t1 = []
     for i in t["idteam"]:
         t1.append([int(i["id_team"]), []])
-        if data_py.team.check_team(i["id_team"]):
-            t3 = data_py.summary.read(i["id_team"], "semester", 1)
-            t4 = data_py.summary.read(i["id_team"], "semester", 2)
+        if data.team.check_team(i["id_team"]):
+            t3 = data.summary.read(i["id_team"], "semester", 1)
+            t4 = data.summary.read(i["id_team"], "semester", 2)
             if t3 and t4:
                 t3_students = t3.get("students", [])
                 t4_students = t4.get("students", [])
@@ -38,5 +38,5 @@ def generate_weekly_summary(id_class):
                 t5[i["id_team"]] = {"students": j[1]}
                 break
 
-    data_py.summary.write(1, t5, "year", id_class)
+    data.summary.write(1, t5, "year", id_class)
     return t1

@@ -1,4 +1,4 @@
-import data_py
+import data
 import logic
 import config
 import base64

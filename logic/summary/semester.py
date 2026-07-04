@@ -1,20 +1,20 @@
-import data_py
+import data
 import logic
 import config
 
 
 def generate_weekly_summary(id_class):
-    t = data_py.team.read_mainfile(id_class)
+    t = data.team.read_mainfile(id_class)
     t6 = []
     for i in t["idteam"]:
-        if data_py.team.check_team(i["id_team"]):
-            t2 = data_py.summary.read_main("week")
+        if data.team.check_team(i["id_team"]):
+            t2 = data.summary.read_main("week")
             t3 = []
-            t8 = data_py.summary.read_main("semester")
+            t8 = data.summary.read_main("semester")
             if t8["num"] == 0:
                 for h in range(t2["num"]):
                     t5 = []
-                    t4 = data_py.summary.read(i["id_team"], "week", h + 1)
+                    t4 = data.summary.read(i["id_team"], "week", h + 1)
                     if t4 and isinstance(t4, dict):
                         for j in t4.values():
                             if isinstance(j, dict):
@@ -23,7 +23,7 @@ def generate_weekly_summary(id_class):
             elif t8["num"] == 1:
                 for h in range(config.semester_1, t2["num"]):
                     t5 = []
-                    t4 = data_py.summary.read(i["id_team"], "week", h + 1)
+                    t4 = data.summary.read(i["id_team"], "week", h + 1)
                     if t4 and isinstance(t4, dict):
                         for j in t4.values():
                             if isinstance(j, dict):
@@ -32,7 +32,7 @@ def generate_weekly_summary(id_class):
             t6.append([int(i["id_team"]), t3])
             t3 = []
 
-    data_py.summary.create("semester", id_class)
+    data.summary.create("semester", id_class)
     t7 = []
     for i in range(len(t6)):
         t7.append([t6[i][0], []])
@@ -75,6 +75,6 @@ def generate_weekly_summary(id_class):
             t7[i][1][j][2] = t7[i][1][j][2][0][1]
 
     for i in t7:
-        data_py.summary.write(i[0], {"students": i[1]}, "semester", id_class)
+        data.summary.write(i[0], {"students": i[1]}, "semester", id_class)
 
     return t7

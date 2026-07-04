@@ -1,5 +1,5 @@
 import flet as ft
-import data_py
+import data
 import config
 
 

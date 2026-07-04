@@ -72,24 +72,24 @@ def read_mainfile(id_class):
 
 
 def find_team(teamleider_name, id_class):
-    import data_py
+    import data
     t = read_mainfile(id_class)
     for team in t["idteam"]:
-        h = data_py.team.read_teamfile(team["id_team"])
+        h = data.team.read_teamfile(team["id_team"])
         if h and h["name"] == teamleider_name:
             return team["id_team"]
     return None
 
 
 def list_teams(id_class):
-    import data_py
+    import data
     teams = read_mainfile(id_class)
     result = []
     for team_info in teams["idteam"]:
         team = read_teamfile(team_info["id_team"])
         if team and team["members"]:
             for member_id in team["members"]:
-                member = data_py.find_user(member_id)
+                member = data.find_user(member_id)
                 if member and isinstance(member, dict):
                     result.append((member['name'], member['id']))
     if not result:

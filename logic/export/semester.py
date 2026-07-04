@@ -2,11 +2,11 @@ from openpyxl import Workbook
 from openpyxl.styles import Font, PatternFill, Alignment, Border, Side
 from openpyxl.utils import get_column_letter
 import io
-import data_py
+import data
 
 
 def export_semester(data1, id_class):
-    t = data_py.team.read_mainfile(id_class)
+    t = data.team.read_mainfile(id_class)
     wb = Workbook()
     wb.remove(wb.active)
 
@@ -55,7 +55,7 @@ def export_semester(data1, id_class):
 
         for row_idx, (student, rank) in enumerate(zip(sorted_students, ranks), start=2):
             name_str, score, rating = student
-            user = data_py.find_user_name(name_str)
+            user = data.find_user_name(name_str)
             user_id = user["id"] if isinstance(user, dict) else 0
             ws.cell(row=row_idx, column=1, value=user_id)
             ws.cell(row=row_idx, column=2, value=name_str)

@@ -1,7 +1,7 @@
 from gui.function import *
 import flet as ft
 import json
-import data_py
+import data
 import logic
 import config
 import logic.student.my_error_give
@@ -16,10 +16,10 @@ def set_user(uid):
 
 
 def _load_data():
-    from data_py.supabase_client import retry_query
+    from data.supabase_client import retry_query
     t2 = []
     try:
-        user_data = retry_query(lambda: data_py.UserData())
+        user_data = retry_query(lambda: data.UserData())
         # print(user_data)
     except Exception:
         return t2
@@ -27,7 +27,7 @@ def _load_data():
         if i['role'] != config.roles[0] and i['role'] == config.roles[2]:
             team_name = ''
             try:
-                for j in retry_query(lambda: data_py.team.read_mainfile(id1))['idteam']:
+                for j in retry_query(lambda: data.team.read_mainfile(id1))['idteam']:
                     if j['id_team'] == i['id']:
                         team_name = j['name']
             except Exception:
@@ -41,8 +41,8 @@ def _load_data():
         elif i['role'] != config.roles[0]:
             team_name = ''
             try:
-                for j in retry_query(lambda: data_py.team.read_mainfile(id1))['idteam']:
-                    t4 = retry_query(lambda: data_py.team.read_teamfile(j['id_team']))
+                for j in retry_query(lambda: data.team.read_mainfile(id1))['idteam']:
+                    t4 = retry_query(lambda: data.team.read_teamfile(j['id_team']))
                     if t4:
                         for h in t4['members']:
                             if h == i['id']:
@@ -78,7 +78,7 @@ def build_home(page):
     col_width = min(500, (page.width or 1100) // 2 - 20) if not is_mobile else (page.width or 400) - 40
     font_big = 16 if is_mobile else 20
     font_small = 14 if is_mobile else 16
-    user = data_py.find_user(id1)
+    user = data.find_user(id1)
     id_class = user.get('class_id', None) if isinstance(user, dict) else None
     data_table = ft.DataTable(
         vertical_lines=ft.border.BorderSide(1, ft.Colors.BLUE),
@@ -256,7 +256,7 @@ def _build_summary_week(page):
 
     def click(e):
         t7 = logic.summary.week.generate_weekly_summary(id1).values()
-        t8 = data_py.team.read_mainfile(id1)
+        t8 = data.team.read_mainfile(id1)
         for i in t7:
             for k in t8["idteam"]:
                 if str(k["id_team"]) == str(next(iter(i))):
@@ -272,14 +272,14 @@ def _build_summary_week(page):
     t5 = ft.OutlinedButton(text="Xác nhận", width=130, height=40, on_click=click, disabled=False)
 
     row2 = []
-    tt = data_py.summary.read_main("week")
-    if data_py.summary.read_main("semester")["num"] == 0 and tt["num"] >= config.semester_1:
+    tt = data.summary.read_main("week")
+    if data.summary.read_main("semester")["num"] == 0 and tt["num"] >= config.semester_1:
         row2.append(ft.Text("Tối đa tuần học kỳ 1", size=20))
         t5.disabled = True
-    elif data_py.summary.read_main("semester")["num"] == 1 and tt["num"] == config.semester_total:
+    elif data.summary.read_main("semester")["num"] == 1 and tt["num"] == config.semester_total:
         row2.append(ft.Text("Tối đa tuần học kỳ 2", size=20))
         t5.disabled = True
-    elif data_py.summary.read_main("semester")["num"] == 2:
+    elif data.summary.read_main("semester")["num"] == 2:
         row2.append(ft.Text("Tối đa học kỳ", size=20))
         t5.disabled = True
 
@@ -297,7 +297,7 @@ def _build_summary_semester(page):
 
     def click(e):
         t7 = logic.summary.semester.generate_weekly_summary(id1)
-        t8 = data_py.team.read_mainfile(id1)
+        t8 = data.team.read_mainfile(id1)
         for i in t7:
             for k in t8["idteam"]:
                 if str(k["id_team"]) == str(next(iter(i))):
@@ -313,14 +313,14 @@ def _build_summary_semester(page):
     t5 = ft.OutlinedButton(text="Xác nhận", width=130, height=40, on_click=click, disabled=False)
 
     row2 = []
-    tt = data_py.summary.read_main("week")
-    if data_py.summary.read_main("semester")["num"] == 0 and not tt["num"] <= config.semester_1:
+    tt = data.summary.read_main("week")
+    if data.summary.read_main("semester")["num"] == 0 and not tt["num"] <= config.semester_1:
         row2.append(ft.Text("Tối đa tuần học kỳ 1", size=20))
         t5.disabled = True
-    elif data_py.summary.read_main("semester")["num"] == 1 and not tt["num"] == config.semester_total:
+    elif data.summary.read_main("semester")["num"] == 1 and not tt["num"] == config.semester_total:
         row2.append(ft.Text("Tối đa tuần học kỳ 2", size=20))
         t5.disabled = True
-    elif data_py.summary.read_main("semester")["num"] == 2:
+    elif data.summary.read_main("semester")["num"] == 2:
         row2.append(ft.Text("Tối đa học kỳ", size=20))
         t5.disabled = True
 
@@ -338,7 +338,7 @@ def _build_summary_year(page):
 
     def click(e):
         t7 = logic.summary.year.generate_weekly_summary(id1)
-        t8 = data_py.team.read_mainfile(id1)
+        t8 = data.team.read_mainfile(id1)
         for i in t7:
             for k in t8["idteam"]:
                 if str(k["id_team"]) == str(next(iter(i))):
@@ -354,7 +354,7 @@ def _build_summary_year(page):
     t5 = ft.OutlinedButton(text="Xác nhận", width=130, height=40, on_click=click, disabled=False)
 
     row2 = []
-    if not data_py.summary.read_main("semester")["num"] <= 2:
+    if not data.summary.read_main("semester")["num"] <= 2:
         row2.append(ft.Text("Không đủ học kỳ", size=20))
 
     return ft.View(
@@ -367,13 +367,13 @@ def _build_summary_year(page):
 
 
 def _build_export_week(page):
-    t4 = data_py.summary.read_main("week")
+    t4 = data.summary.read_main("week")
     row3 = []
     for i in range(1, t4["num"] + 1):
         label = f"Tuần 0{i}" if i <= 9 else f"Tuần {i}"
         row3.append(ft.Checkbox(label=label))
 
-    t5 = [i["id_team"] for i in data_py.team.read_mainfile(id1)["idteam"]]
+    t5 = [i["id_team"] for i in data.team.read_mainfile(id1)["idteam"]]
     t6 = {}
 
     def check(e):
@@ -382,7 +382,7 @@ def _build_export_week(page):
             t10.disabled = False
             page.update()
             for i in t5:
-                t7 = data_py.summary.read(i, "week", int(t8[-1]))
+                t7 = data.summary.read(i, "week", int(t8[-1]))
                 t6[str(i)] = t7
         else:
             t10.disabled = True
@@ -418,13 +418,13 @@ def _build_export_week(page):
 
 
 def _build_export_semester(page):
-    t4 = data_py.summary.read_main("semester")
+    t4 = data.summary.read_main("semester")
     row3 = []
     for i in range(1, t4["num"] + 1):
         label = f"Học kỳ 0{i}" if i <= 9 else f"Học kỳ {i}"
         row3.append(ft.Checkbox(label=label))
 
-    t5 = [i["id_team"] for i in data_py.team.read_mainfile(id1)["idteam"]]
+    t5 = [i["id_team"] for i in data.team.read_mainfile(id1)["idteam"]]
     t6 = {}
 
     def check(e):
@@ -433,7 +433,7 @@ def _build_export_semester(page):
             t10.disabled = False
             page.update()
             for i in t5:
-                t7 = data_py.summary.read(i, "semester", int(t8[-1]))
+                t7 = data.summary.read(i, "semester", int(t8[-1]))
                 if t7 and isinstance(t7, dict):
                     t6[str(i)] = t7.get('students', [])
         else:
@@ -474,7 +474,7 @@ def _build_export_year(page):
     t9 = ft.Text(value="", size=20)
 
     def click(e):
-        t5 = data_py.summary.read(1, "year", 1)
+        t5 = data.summary.read(1, "year", 1)
         excel_bytes = logic.export.year.export_year(t5, id1)
         download_btn.url = excel_to_download_link(excel_bytes)
         download_btn.visible = True
@@ -508,7 +508,7 @@ def _build_create_account(page):
         state1.selected_role = e.control.text
         page.update()
 
-    for i in data_py.team.read_mainfile(id1)['idteam']:
+    for i in data.team.read_mainfile(id1)['idteam']:
         t7.controls.append(ft.Button(i['name'], on_click=click1))
 
     class State:
@@ -542,7 +542,7 @@ def _build_create_account(page):
                 if not state1.selected_role:
                     page.open(ft.SnackBar(content=ft.Text("Vui lòng chọn tổ")))
                     return
-                team_id = data_py.team.find_team(state1.selected_role, id1)
+                team_id = data.team.find_team(state1.selected_role, id1)
                 if team_id:
                     logic.team.add_member(team_id, t10[1])
                 else:

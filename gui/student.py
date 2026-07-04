@@ -1,5 +1,5 @@
 import flet as ft
-import data_py
+import data
 import logic
 from gui.function import get_layout
 
@@ -11,7 +11,7 @@ idclass=None
 def set_user(uid):
     global id1, idclass
     id1 = uid
-    user = data_py.find_user(id1)
+    user = data.find_user(id1)
     idclass = user.get('class_id', None) if isinstance(user, dict) else None
 
 
@@ -122,7 +122,7 @@ def build_home(page):
             alignment=ft.MainAxisAlignment.SPACE_BETWEEN,
         )
 
-    # user = data_py.find_user(id1)
+    # user = data.find_user(id1)
     user_name = user.get('name', '') if isinstance(user, dict) else ''
 
     return ft.View(

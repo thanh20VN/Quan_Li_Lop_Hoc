@@ -105,8 +105,8 @@ def create(type, id_class=None):
             "class_id": id_class
         }).execute()
 
-    import data_py
-    t = data_py.team.read_mainfile(id_class) if id_class else {"idteam": []}
+    import data
+    t = data.team.read_mainfile(id_class) if id_class else {"idteam": []}
     for i in t["idteam"]:
         teamleider_id = i["id_team"]
         if type == "week":

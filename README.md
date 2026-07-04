@@ -5,6 +5,11 @@ Nếu có lỗi thì liên hệ qua email `truongminhthanh0106+github+help@gmail
 # Tree File
 
 ```markdown
+├── 📁 .mimocode
+│   ├── 📁 plans
+│   ├── ⚙️ .gitignore
+│   ├── ⚙️ package-lock.json
+│   └── ⚙️ package.json
 ├── 📁 assets
 │   ├── 📁 windows
 │   │   └── 📁 runner
@@ -14,25 +19,15 @@ Nếu có lỗi thì liên hệ qua email `truongminhthanh0106+github+help@gmail
 │   ├── 🖼️ icon_windows.png
 │   └── 🖼️ splash_android.png
 ├── 📁 data
-│   ├── 📁 summary
-│   │   ├── 📁 semester
-│   │   │   └── ⚙️ main.json
-│   │   ├── 📁 week
-│   │   │   └── ⚙️ main.json
-│   │   └── ⚙️ year.json
-│   ├── 📁 team
-│   │   └── ⚙️ main.json
-│   ├── ⚙️ User.json
-│   ├── ⚙️ errors.json
-│   └── ⚙️ give.json
-├── 📁 data_py
 │   ├── 🐍 __init__.py
 │   ├── 🐍 eg.py
 │   ├── 🐍 role.py
 │   ├── 🐍 summary.py
+│   ├── 🐍 supabase_client.py
 │   └── 🐍 team.py
 ├── 📁 gui
 │   ├── 🐍 __init__.py
+│   ├── 🐍 auth.py
 │   ├── 🐍 class_monitor.py
 │   ├── 🐍 function.py
 │   ├── 🐍 student.py
@@ -65,7 +60,6 @@ Nếu có lỗi thì liên hệ qua email `truongminhthanh0106+github+help@gmail
 ├── ⚙️ .gitignore
 ├── 📄 LICENSE
 ├── 📝 README.md
-├── 🐍 cli.py
 ├── ⚙️ config.json
 ├── 🐍 config.py
 ├── 🐍 main.py
@@ -120,9 +114,9 @@ Nếu có lỗi thì liên hệ qua email `truongminhthanh0106+github+help@gmail
 
 ### Logic
 
-- [ ] Delete offline and add online
+- [x] Delete offline and add online
 
-- [ ] Realtime for update point student (hard)
+- [ ] Realtime for update point student (hard) (no plan)
 
 - [ ] Import student from excel
 
@@ -132,8 +126,11 @@ Nếu có lỗi thì liên hệ qua email `truongminhthanh0106+github+help@gmail
 
 - [ ] Update new gui, more modern
 
-- [ ] Add logout
+- [x] Add logout
 
-- [ ] Fix scale
+- [x] Fix scale
 
-- [ ] Publish on web
+- [x] Publish on web
+
+
+- [x] Can download excel on web

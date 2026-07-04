@@ -2,11 +2,11 @@ from openpyxl import Workbook
 from openpyxl.styles import Font, PatternFill, Alignment, Border, Side
 from openpyxl.utils import get_column_letter
 import io
-import data_py
+import data
 
 
 def export_week(data1, id_class):
-    t = data_py.team.read_mainfile(id_class)
+    t = data.team.read_mainfile(id_class)
     wb = Workbook()
     wb.remove(wb.active)
 

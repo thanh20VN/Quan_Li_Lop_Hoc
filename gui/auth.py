@@ -1,5 +1,5 @@
 import flet as ft
-import data_py
+import data
 import logic
 import config
 
@@ -68,8 +68,8 @@ def build_login_view(page: ft.Page):
         password = pass1.value
         t = logic.login.login(username, password)
         if t == "Login successful.":
-            user_id = data_py.find_user_name(username).get("id")
-            role = data_py.find_user(user_id).get("role")
+            user_id = data.find_user_name(username).get("id")
+            role = data.find_user(user_id).get("role")
             route_map = {
                 config.roles[0]: "/teacher",
                 config.roles[1]: "/classmonitor",
