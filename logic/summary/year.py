@@ -35,7 +35,7 @@ def generate_weekly_summary(id_class):
     for i in t["idteam"]:
         for j in t1:
             if str(i["id_team"]) == str(j[0]):
-                t5[i["id_team"]] = {"students": j[1]}
+                t5[i["id_team"]] = {"year": "Năm học", "students": j[1]}
                 break
 
     data.summary.write(1, t5, "year", id_class)

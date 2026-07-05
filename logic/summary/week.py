@@ -5,12 +5,12 @@ import config
 
 def generate_weekly_summary(id_class):
     t = data.team.read_mainfile(id_class)
-    data.summary.create("week", id_class)
+    week_num = data.summary.create("week", id_class)
     t2 = {}
     for i in t["idteam"]:
         if data.team.check_team(i["id_team"]):
             t1 = data.team.read_teamfile(i["id_team"])
-            t4 = {}
+            t4 = {"week": week_num}
             for j in t1["members"]:
                 t3 = data.find_user(j)
                 if isinstance(t3, dict):

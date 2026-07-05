@@ -32,7 +32,7 @@ def generate_weekly_summary(id_class):
             t6.append([int(i["id_team"]), t3])
             t3 = []
 
-    data.summary.create("semester", id_class)
+    semester_num = data.summary.create("semester", id_class)
     t7 = []
     for i in range(len(t6)):
         t7.append([t6[i][0], []])
@@ -75,6 +75,6 @@ def generate_weekly_summary(id_class):
             t7[i][1][j][2] = t7[i][1][j][2][0][1]
 
     for i in t7:
-        data.summary.write(i[0], {"students": i[1]}, "semester", id_class)
+        data.summary.write(i[0], {"semester": semester_num, "students": i[1]}, "semester", id_class)
 
-    return t7
+    return {"semester": semester_num, "data": t7}

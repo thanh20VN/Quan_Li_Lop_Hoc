@@ -86,6 +86,7 @@ def main(page: ft.Page):
             page.views.pop()
         if page.views:
             top_view = page.views[-1]
+            page.views.clear()
             page.go(top_view.route)
         else:
             page.go("/")

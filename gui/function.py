@@ -4,9 +4,9 @@ import config
 import base64
 
 
-def excel_to_download_link(excel_bytes):
+def excel_to_download_link(excel_bytes, filename="export.xlsx"):
     b64 = base64.b64encode(excel_bytes).decode()
-    return f"data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,{b64}"
+    return f"data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,{b64}", filename
 
 
 def get_layout(page):

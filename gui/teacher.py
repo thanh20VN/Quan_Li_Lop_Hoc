@@ -245,6 +245,9 @@ def _build_summary_week(page):
         t7 = logic.summary.week.generate_weekly_summary(id1).values()
         t8 = data.team.read_mainfile(id1)
         for i in t7:
+            week_num = i.pop("week", None)
+            if week_num:
+                t4.controls.append(ft.Text(f"--- Tuần {week_num} ---", size=20, weight=ft.FontWeight.BOLD))
             for k in t8["idteam"]:
                 if str(k["id_team"]) == str(next(iter(i))):
                     t4.controls.append(ft.Text(f"Tên nhóm: {k['name']}", size=18))
@@ -283,8 +286,12 @@ def _build_summary_semester(page):
     t4 = ft.Column(controls=[], scroll=ft.ScrollMode.ALWAYS, expand=True)
 
     def click(e):
-        t7 = logic.summary.semester.generate_weekly_summary(id1)
+        result = logic.summary.semester.generate_weekly_summary(id1)
+        semester_num = result.get("semester", "")
+        t7 = result.get("data", [])
         t8 = data.team.read_mainfile(id1)
+        if semester_num:
+            t4.controls.append(ft.Text(f"--- Học kỳ {semester_num} ---", size=20, weight=ft.FontWeight.BOLD))
         for i in t7:
             for k in t8["idteam"]:
                 if str(k["id_team"]) == str(next(iter(i))):
@@ -326,6 +333,7 @@ def _build_summary_year(page):
     def click(e):
         t7 = logic.summary.year.generate_weekly_summary(id1)
         t8 = data.team.read_mainfile(id1)
+        t4.controls.append(ft.Text(f"--- Năm học ---", size=20, weight=ft.FontWeight.BOLD))
         for i in t7:
             for k in t8["idteam"]:
                 if str(k["id_team"]) == str(next(iter(i))):
@@ -381,11 +389,28 @@ def _build_export_week(page):
     download_btn = ft.OutlinedButton(text="Tải file", width=120, visible=False)
     t9 = ft.Text(value="", size=20)
 
+    def download_click(e):
+        page.run_javascript(f"""
+            var a = document.createElement('a');
+            a.href = '{download_btn.url}';
+            a.download = '{download_btn.data}';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+        """)
+
+    download_btn.on_click = download_click
+
     def click(e):
+        t8 = find_selected_numbers_end(row3)
+        week_num = int(t8[-1]) if t8 else 0
         excel_bytes = logic.export.week.export_week(t6, id1)
-        download_btn.url = excel_to_download_link(excel_bytes)
+        fname = f"Tuan_{week_num:02d}.xlsx"
+        link, _ = excel_to_download_link(excel_bytes, fname)
+        download_btn.url = link
+        download_btn.data = fname
         download_btn.visible = True
-        t9.value = "Xuất file thành công!"
+        t9.value = f"Xuất file thành công! ({fname})"
         page.update()
 
     t10 = ft.OutlinedButton(text="Xác nhận", width=130, height=40, on_click=click, disabled=True)
@@ -433,11 +458,28 @@ def _build_export_semester(page):
     download_btn = ft.OutlinedButton(text="Tải file", width=120, visible=False)
     t9 = ft.Text(value="", size=20)
 
+    def download_click(e):
+        page.run_javascript(f"""
+            var a = document.createElement('a');
+            a.href = '{download_btn.url}';
+            a.download = '{download_btn.data}';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+        """)
+
+    download_btn.on_click = download_click
+
     def click(e):
+        t8 = find_selected_numbers_end(row3)
+        sem_num = int(t8[-1]) if t8 else 0
         excel_bytes = logic.export.semester.export_semester(t6, id1)
-        download_btn.url = excel_to_download_link(excel_bytes)
+        fname = f"Hoc_ky_{sem_num:02d}.xlsx"
+        link, _ = excel_to_download_link(excel_bytes, fname)
+        download_btn.url = link
+        download_btn.data = fname
         download_btn.visible = True
-        t9.value = "Xuất file thành công!"
+        t9.value = f"Xuất file thành công! ({fname})"
         page.update()
 
     t10 = ft.OutlinedButton(text="Xác nhận", width=130, height=40, on_click=click, disabled=True)
@@ -460,12 +502,27 @@ def _build_export_year(page):
     download_btn = ft.OutlinedButton(text="Tải file", width=120, visible=False)
     t9 = ft.Text(value="", size=20)
 
+    def download_click(e):
+        page.run_javascript(f"""
+            var a = document.createElement('a');
+            a.href = '{download_btn.url}';
+            a.download = '{download_btn.data}';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+        """)
+
+    download_btn.on_click = download_click
+
     def click(e):
         t5 = data.summary.read(1, "year", 1)
         excel_bytes = logic.export.year.export_year(t5, id1)
-        download_btn.url = excel_to_download_link(excel_bytes)
+        fname = "Nam_hoc.xlsx"
+        link, _ = excel_to_download_link(excel_bytes, fname)
+        download_btn.url = link
+        download_btn.data = fname
         download_btn.visible = True
-        t9.value = "Xuất file thành công!"
+        t9.value = f"Xuất file thành công! ({fname})"
         page.update()
 
     t10 = ft.OutlinedButton(text="Xác nhận", width=130, height=40, on_click=click, disabled=False)

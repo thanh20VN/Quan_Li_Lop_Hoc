@@ -6,31 +6,38 @@ def write(teamleider_id, data, type, class_id=None):
     if type not in ["week", "semester", "year"]:
         return "Invalid type. Must be 'week', 'semester', or 'year'."
 
-    existing = (
-        supabase.table("summary")
-        .select("id")
-        .eq("team_id", teamleider_id)
-        .eq("type", type)
-        .execute()
-    )
-
     payload = json.dumps(data, ensure_ascii=False) if isinstance(data, dict) else data
 
-    if existing.data:
-        supabase.table("summary").update({
-            "payload": payload,
-            "class_id": class_id
-        }).eq("id", existing.data[0]["id"]).execute()
-    else:
+    if type == "week":
         supabase.table("summary").insert({
             "team_id": teamleider_id,
             "type": type,
             "payload": payload,
             "class_id": class_id
         }).execute()
+    else:
+        existing = (
+            supabase.table("summary")
+            .select("id")
+            .eq("team_id", teamleider_id)
+            .eq("type", type)
+            .execute()
+        )
+        if existing.data:
+            supabase.table("summary").update({
+                "payload": payload,
+                "class_id": class_id
+            }).eq("id", existing.data[0]["id"]).execute()
+        else:
+            supabase.table("summary").insert({
+                "team_id": teamleider_id,
+                "type": type,
+                "payload": payload,
+                "class_id": class_id
+            }).execute()
 
 
-def read(teamleider_id, type, summary_id=None):
+def read(teamleider_id, type, summary_num=None):
     if type not in ["week", "semester", "year"]:
         return "Invalid type. Must be 'week', 'semester', or 'year'."
 
@@ -42,22 +49,32 @@ def read(teamleider_id, type, summary_id=None):
             .limit(1)
             .execute()
         )
-    else:
-        response = (
-            supabase.table("summary")
-            .select("payload, id")
-            .eq("team_id", teamleider_id)
-            .eq("type", type)
-            .execute()
-        )
+        if not response.data:
+            return None
+        payload = response.data[0]["payload"]
+        return json.loads(payload) if isinstance(payload, str) else payload
+
+    response = (
+        supabase.table("summary")
+        .select("payload")
+        .eq("team_id", teamleider_id)
+        .eq("type", type)
+        .execute()
+    )
 
     if not response.data:
         return None
 
-    payload = response.data[0]["payload"]
-    if isinstance(payload, str):
-        return json.loads(payload)
-    return payload
+    if summary_num is not None:
+        for item in response.data:
+            payload = item["payload"]
+            if isinstance(payload, str):
+                payload = json.loads(payload)
+            if isinstance(payload, dict) and payload.get(type) == summary_num:
+                return payload
+
+    payload = response.data[-1]["payload"]
+    return json.loads(payload) if isinstance(payload, str) else payload
 
 
 def read_main(type):
@@ -72,8 +89,12 @@ def read_main(type):
     if response.data:
         payload = response.data[0]["payload"]
         if isinstance(payload, str):
-            return json.loads(payload)
-        return payload
+            try:
+                return json.loads(payload)
+            except Exception:
+                pass
+        if isinstance(payload, dict):
+            return payload
     return {"num": 0}
 
 
@@ -83,10 +104,10 @@ def create(type, id_class=None):
 
     counter_type = f"{type}_counter"
     main = read_main(type)
-    new_num = main["num"] + 1
-    main["num"] = new_num
+    new_num = main.get("num", 0) + 1
 
-    counter_data = json.dumps(main)
+    counter_data = {"num": new_num}
+
     existing = (
         supabase.table("summary")
         .select("id")
@@ -96,7 +117,8 @@ def create(type, id_class=None):
     )
     if existing.data:
         supabase.table("summary").update({
-            "payload": counter_data
+            "payload": counter_data,
+            "class_id": id_class
         }).eq("id", existing.data[0]["id"]).execute()
     else:
         supabase.table("summary").insert({
@@ -104,15 +126,6 @@ def create(type, id_class=None):
             "payload": counter_data,
             "class_id": id_class
         }).execute()
-
-    import data
-    t = data.team.read_mainfile(id_class) if id_class else {"idteam": []}
-    for i in t["idteam"]:
-        teamleider_id = i["id_team"]
-        if type == "week":
-            file_path = f"./data/summary/week/Team_{teamleider_id}/"
-        elif type == "semester":
-            file_path = f"./data/summary/semester/Team_{teamleider_id}/"
 
     return new_num
 

@@ -28,9 +28,10 @@ def export_week(data1, id_class):
 
         headers = ['Mã học sinh', 'Họ và tên', 'Điểm cộng', 'Điểm trừ', 'Tổng điểm', 'Xếp loại', 'Hạng']
 
-        if team_data:
+        students_only = {k: v for k, v in team_data.items() if isinstance(v, dict)}
+        if students_only:
             sorted_students = sorted(
-                [(student_id, student) for student_id, student in team_data.items()],
+                [(student_id, student) for student_id, student in students_only.items()],
                 key=lambda x: x[1]['total'],
                 reverse=True
             )
@@ -59,7 +60,7 @@ def export_week(data1, id_class):
             cell.border = border
 
         current_row = 2
-        for idx, (student_id, student) in enumerate(team_data.items(), 1):
+        for idx, (student_id, student) in enumerate(students_only.items(), 1):
             ws.cell(row=current_row, column=1, value=student_id)
             ws.cell(row=current_row, column=2, value=student['name'])
             ws.cell(row=current_row, column=3, value=student['give'])

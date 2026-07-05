@@ -157,6 +157,9 @@ def _build_summary(page):
             t24 = logic.summary.week.generate_weekly_summary(idclass).values()
             t26 = data.team.read_mainfile(idclass)
             for i in t24:
+                week_num = i.pop("week", None)
+                if week_num:
+                    t25.controls.append(ft.Text(f"--- Tuần {week_num} ---", size=20, weight=ft.FontWeight.BOLD))
                 for k in t26["idteam"]:
                     if str(k["id_team"]) == str(next(iter(i))):
                         t25.controls.append(ft.Text(f"Tên nhóm: {k['name']}", size=18))
@@ -168,8 +171,12 @@ def _build_summary(page):
             t22.disabled = True
             page.update()
         elif t23['value'] == "Học kỳ":
-            t24 = logic.summary.semester.generate_weekly_summary(idclass)
+            result = logic.summary.semester.generate_weekly_summary(idclass)
+            semester_num = result.get("semester", "")
+            t24 = result.get("data", [])
             t26 = data.team.read_mainfile(idclass)
+            if semester_num:
+                t25.controls.append(ft.Text(f"--- Học kỳ {semester_num} ---", size=20, weight=ft.FontWeight.BOLD))
             for i in t24:
                 for k in t26["idteam"]:
                     if str(k["id_team"]) == str(next(iter(i))):
@@ -184,6 +191,7 @@ def _build_summary(page):
         elif t23['value'] == "Năm học":
             t24 = logic.summary.year.generate_weekly_summary(idclass)
             t26 = data.team.read_mainfile(idclass)
+            t25.controls.append(ft.Text(f"--- Năm học ---", size=20, weight=ft.FontWeight.BOLD))
             for i in t24:
                 for k in t26["idteam"]:
                     if str(k["id_team"]) == str(next(iter(i))):
