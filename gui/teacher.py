@@ -19,43 +19,28 @@ def _load_data():
     from data.supabase_client import retry_query
     t2 = []
     try:
-        user_data = retry_query(lambda: data.UserData())
-        # print(user_data)
+        user_data = retry_query(lambda: data.UserData(id1))
+        # print(id1, user_data)
     except Exception:
         return t2
     for i in user_data.values():
-        if i['role'] != config.roles[0] and i['role'] == config.roles[2]:
-            team_name = ''
-            try:
-                for j in retry_query(lambda: data.team.read_mainfile(id1))['idteam']:
-                    if j['id_team'] == i['id']:
-                        team_name = j['name']
-            except Exception:
-                pass
-            t2.append([
-                i['id'], i['name'], team_name,
-                logic.student.my_error_give.cal_give(i['id'],id1),
-                logic.student.my_error_give.cal_errors(i['id'],id1),
-                logic.student.my_error_give.cal_total(i['id'],id1)
-            ])
-        elif i['role'] != config.roles[0]:
-            team_name = ''
-            try:
-                for j in retry_query(lambda: data.team.read_mainfile(id1))['idteam']:
+        if i['role'] == config.roles[0]:
+            continue
+        team_name = ''
+        try:
+            for j in retry_query(lambda: data.team.read_mainfile(id1))['idteam']:
+                if j['id_team'] == i['id']:
+                    team_name = j['name']
+                else:
                     t4 = retry_query(lambda: data.team.read_teamfile(j['id_team']))
-                    if t4:
-                        for h in t4['members']:
-                            if h == i['id']:
-                                team_name = j['name']
-                                break
-            except Exception:
-                pass
-            t2.append([
-                i['id'], i['name'], team_name,
-                logic.student.my_error_give.cal_give(i['id']),
-                logic.student.my_error_give.cal_errors(i['id']),
-                logic.student.my_error_give.cal_total(i['id'])
-            ])
+                    if t4 and i['id'] in t4.get('members', []):
+                        team_name = j['name']
+        except Exception:
+            pass
+        give = logic.student.my_error_give.cal_give(i['id'], id1) or 0
+        errors = logic.student.my_error_give.cal_errors(i['id'], id1) or 0
+        total = logic.student.my_error_give.cal_total(i['id'], id1) or 0
+        t2.append([i['id'], i['name'], team_name, give, errors, total])
     return t2
 
 
@@ -66,8 +51,10 @@ def _make_row(cells):
 def build_home(page):
     try:
         t2 = _load_data()
+        # print(t2)
     except Exception:
         t2 = []
+    # print(t2)
     layout = get_layout(page)
     is_mobile = layout == "mobile"
     is_tablet = layout == "tablet"
@@ -79,7 +66,7 @@ def build_home(page):
     font_big = 16 if is_mobile else 20
     font_small = 14 if is_mobile else 16
     user = data.find_user(id1)
-    id_class = user.get('class_id', None) if isinstance(user, dict) else None
+    # id_class = user.get('id1', None) if isinstance(user, dict) else None
     data_table = ft.DataTable(
         vertical_lines=ft.border.BorderSide(1, ft.Colors.BLUE),
         horizontal_lines=ft.border.BorderSide(1, ft.Colors.GREEN),

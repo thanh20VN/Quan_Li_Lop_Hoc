@@ -16,7 +16,7 @@ def UserData(id_class=None):
         response = (
             supabase.table("users")
             .select("id, name, role")
-            .eq("id_class", id_class)
+            .eq("class_id", id_class)
             .execute()
         )
     result = {}

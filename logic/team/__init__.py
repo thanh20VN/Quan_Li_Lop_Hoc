@@ -8,8 +8,8 @@ def create_team(name, teamleider_id, id_class):
         "name": name,
         "teamleider_id": teamleider_id,
         "members": [teamleider_id],
-        "errors": [],
-        "give": [],
+        "errors": [[]],
+        "give": [[]],
         "id_class": id_class
     }
     data.team.write_teamfile(teamleider_id, teams)
