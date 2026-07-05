@@ -128,7 +128,7 @@ Nếu có lỗi thì liên hệ qua email `truongminhthanh0106+github+help@gmail
 
 - [x] Add logout
 
-- [x] Fix scale
+- [x] Fix scale (not work on mobile)
 
 - [x] Publish on web
 
